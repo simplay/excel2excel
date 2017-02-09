@@ -9,21 +9,27 @@ public class Main {
      *  the first path directs to the parent form, the successor files to the children excel sheets.
      */
     public static void main(String[] args) {
+        // TODO export this to a file
+        String mappingFilePath = "data/mappings.txt";
+
         System.out.println("Reading excel files...");
-        ExcelFile excel = null;
+        ExcelFile fromExcel = null;
+        ExcelFile toExcel = null;
         try {
-            Path path = Paths.get(args[0]);
+            Path pathIn = Paths.get(args[0]);
+            Path pathOut = Paths.get(args[1]);
+
             // excel = new ExcelFile(path.toString(), 5);
-            excel = new ExcelFile(path.toString(), 0);
+
+            fromExcel = new ExcelFile(pathIn.toString(), 0);
+            toExcel = new ExcelFile(pathOut.toString(), 0);
             System.out.println(" => Excel files read.");
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        System.out.println("Fetching cell values...");
 
-        excel.writeCell("13", 0, 2);
-        System.out.println(excel.getCellValue(0, 2));
-        excel.save();
+        new Consolidator(mappingFilePath, fromExcel, toExcel);
+        toExcel.save();
     }
 }
