@@ -6,6 +6,10 @@
  *
  * This class is used to copy the cell content in a FROM excel to another cell
  * in a TO excel file. The cells are representated by their column- and row indices.
+ *
+ * The dynamic column computation works as follows:
+ * look for the first column index at a fixed row that has a empty cell.
+ * Start the lookup at the given index
  */
 public class Mapping {
 
@@ -13,6 +17,7 @@ public class Mapping {
     private int fromColIdx;
     private int toRowIdx;
     private int toColIdx;
+    private boolean usesOffset;
 
     /**
      * Define a cell to cell mapping between two excel files.
@@ -21,12 +26,18 @@ public class Mapping {
      * @param fromColIdx cell column in the FROM excel file
      * @param toRowIdx cell row in TO the excel file
      * @param toColIdx cell column in TO the excel file
+     * @param usesOffset indicates whether the TO column index is computed dynamically.
      */
-    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
         this.fromRowIdx = fromRowIdx;
         this.fromColIdx = fromColIdx;
         this.toRowIdx = toRowIdx;
         this.toColIdx = toColIdx;
+        this.usesOffset = usesOffset;
+    }
+
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false);
     }
 
     public int getFromRowIndex() {
@@ -43,5 +54,9 @@ public class Mapping {
 
     public int getToColumnIndex() {
         return toColIdx;
+    }
+
+    public boolean usesOffset() {
+        return usesOffset;
     }
 }

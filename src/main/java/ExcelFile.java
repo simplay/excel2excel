@@ -6,6 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.util.Iterator;
 
 /**
  * This class models an excel file and allows to easily load and write cells
@@ -88,12 +89,31 @@ public class ExcelFile {
 
     /**
      * Get the row by an index from the current sheet.
+     * First row index is 0.
      *
-     * @param rowIdx
-     * @return
+     * @param rowIdx cell row index
+     * @return row at given row index.
      */
     public XSSFRow getRow(int rowIdx) {
         return getSheet().getRow(rowIdx);
+    }
+
+    /**
+     * Find the next free cell-column index for a given row index.
+     * Please note that the first index value is represented by the value 0.
+     *
+     * @param rowIdx cell row index.
+     * @param startColIdx cell column index we want to start our search.
+     * @return free column index.
+     */
+    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
+        int colIdx = startColIdx;
+        XSSFCell content;
+        do {
+            content = getRow(rowIdx).getCell(colIdx);
+            colIdx++;
+        } while (content != null);
+        return colIdx - 1;
     }
 
     /**
@@ -125,6 +145,8 @@ public class ExcelFile {
     }
 
     /**
+     * Get the currently loaded sheet of the loaded excel file.
+     *
      * @retur the current excel sheet
      */
     public XSSFSheet getSheet() {

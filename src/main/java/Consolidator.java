@@ -29,7 +29,11 @@ public class Consolidator extends FileReader{
     private void mergeExcelFiles() {
         for (Mapping mapping : mappings) {
             String fromValue = inExcel.getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
-            outExcel.writeCell(fromValue, mapping.getToRowIdx(), mapping.getToColumnIndex());
+            int toColumnIndex = mapping.getToColumnIndex();
+            if (mapping.usesOffset()) {
+                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIdx(), mapping.getToColumnIndex());
+            }
+            outExcel.writeCell(fromValue, mapping.getToRowIdx(), toColumnIndex);
         }
     }
 
@@ -37,6 +41,11 @@ public class Consolidator extends FileReader{
     protected void processLine(String line) {
         String[] row = line.split(" ");
         int[] items = parseToIntegerArray(row);
-        mappings.add(new Mapping(items[0], items[1], items[2], items[3]));
+        if (items.length > 4) {
+            boolean usesOffset = (items[4] == 1);
+            mappings.add(new Mapping(items[0], items[1], items[2], items[3], usesOffset));
+        } else {
+            mappings.add(new Mapping(items[0], items[1], items[2], items[3]));
+        }
     }
 }
