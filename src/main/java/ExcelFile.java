@@ -134,7 +134,10 @@ public class ExcelFile {
                 cellContent = String.valueOf(cell.getStringCellValue());
                 break;
             case Cell.CELL_TYPE_NUMERIC:
-                cellContent = String.valueOf(cell.getNumericCellValue());
+                cellContent = cell.getRawValue();
+                if (cellContent.contains(".")) {
+                    cellContent = String.valueOf(cell.getNumericCellValue());
+                }
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 cellContent = String.valueOf(cell.getBooleanCellValue());
