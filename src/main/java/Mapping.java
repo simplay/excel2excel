@@ -18,6 +18,7 @@ public class Mapping {
     private int toRowIdx;
     private int toColIdx;
     private boolean usesOffset;
+    private String defaultValue;
 
     /**
      * Define a cell to cell mapping between two excel files.
@@ -28,16 +29,25 @@ public class Mapping {
      * @param toColIdx cell column in TO the excel file
      * @param usesOffset indicates whether the TO column index is computed dynamically.
      */
-    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
         this.fromRowIdx = fromRowIdx;
         this.fromColIdx = fromColIdx;
         this.toRowIdx = toRowIdx;
         this.toColIdx = toColIdx;
         this.usesOffset = usesOffset;
+        this.defaultValue = defaultValue;
+    }
+
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "");
     }
 
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false);
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "");
+    }
+
+    public Mapping(int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
+        this(-1, -1, toRowIdx, toColIdx, usesOffset, defaultValue);
     }
 
     public int getFromRowIndex() {
@@ -56,7 +66,15 @@ public class Mapping {
         return toColIdx;
     }
 
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
     public boolean usesOffset() {
         return usesOffset;
+    }
+
+    public boolean hasDefaultValue() {
+        return defaultValue != "";
     }
 }

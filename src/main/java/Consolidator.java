@@ -1,3 +1,6 @@
+import org.apache.commons.codec.binary.StringUtils;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +31,11 @@ public class Consolidator extends FileReader{
      */
     private void mergeExcelFiles() {
         for (Mapping mapping : mappings) {
-            String fromValue = inExcel.getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
+            String fromValue = mapping.getDefaultValue();
+            if (!mapping.hasDefaultValue()) {
+                fromValue = inExcel.getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
+            }
+
             int toColumnIndex = mapping.getToColumnIndex();
             if (mapping.usesOffset()) {
                 toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIdx(), mapping.getToColumnIndex());
@@ -37,9 +44,26 @@ public class Consolidator extends FileReader{
         }
     }
 
+    private boolean lastRowItemIsNumeric(String[] row) {
+        String str = row[row.length - 1];
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
     @Override
     protected void processLine(String line) {
         String[] row = line.split(" ");
+
+        // there is a default value specified
+        if (!lastRowItemIsNumeric(row)) {
+            int toRowIdx = Integer.parseInt(row[0]);
+            int toColIdx = Integer.parseInt(row[1]);
+            boolean usesOffset = (row[row.length - 2].equals("1"));
+            String defaultValue = row[row.length - 1];
+            defaultValue = defaultValue.replace("\"", "");
+            mappings.add(new Mapping(toRowIdx, toColIdx, usesOffset, defaultValue));
+            return;
+        }
+
         int[] items = parseToIntegerArray(row);
         if (items.length > 4) {
             boolean usesOffset = (items[4] == 1);
