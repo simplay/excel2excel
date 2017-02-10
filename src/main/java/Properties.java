@@ -28,10 +28,16 @@ public class Properties {
     }
 
     public static String getMappingFilePath() {
+        if (getInstance().hasContentAt(2)) {
+            return getInstance().getPathAt(2);
+        }
         return Paths.get("data/mappings.txt").toString();
     }
 
     public static String getScalaValuesFilePath() {
+        if (getInstance().hasContentAt(3)) {
+            return getInstance().getPathAt(3);
+        }
         return Paths.get("data/scala_values.txt").toString();
     }
 
@@ -45,5 +51,9 @@ public class Properties {
 
     public String getPathAt(int idx) {
         return Paths.get(userParameters[idx]).toString();
+    }
+
+    public boolean hasContentAt(int idx) {
+        return idx <= userParameters.length - 1;
     }
 }
