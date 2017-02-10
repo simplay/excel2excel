@@ -31,6 +31,10 @@ public class Properties {
         return Paths.get("data/mappings.txt").toString();
     }
 
+    public static String getScalaValuesFilePath() {
+        return Paths.get("data/scala_values.txt").toString();
+    }
+
     public static String getFromExcelFilePath() {
         return getInstance().getPathAt(0);
     }

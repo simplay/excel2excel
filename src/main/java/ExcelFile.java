@@ -6,7 +6,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.Iterator;
 
 /**
  * This class models an excel file and allows to easily load and write cells

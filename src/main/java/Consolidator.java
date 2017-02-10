@@ -1,6 +1,3 @@
-import org.apache.commons.codec.binary.StringUtils;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -34,6 +31,9 @@ public class Consolidator extends FileReader{
             String fromValue = mapping.getDefaultValue();
             if (!mapping.hasDefaultValue()) {
                 fromValue = inExcel.getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
+                if (mapping.hasTranslation()) {
+                    fromValue = Translator.lookup(mapping.getTranslationRow(), fromValue);
+                }
             }
 
             int toColumnIndex = mapping.getToColumnIndex();
@@ -65,7 +65,10 @@ public class Consolidator extends FileReader{
         }
 
         int[] items = parseToIntegerArray(row);
-        if (items.length > 4) {
+        if (items.length > 5) {
+            boolean usesOffset = (items[4] == 1);
+            mappings.add(new Mapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
+        } else if (items.length > 4) {
             boolean usesOffset = (items[4] == 1);
             mappings.add(new Mapping(items[0], items[1], items[2], items[3], usesOffset));
         } else {

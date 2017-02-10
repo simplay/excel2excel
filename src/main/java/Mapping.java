@@ -19,6 +19,7 @@ public class Mapping {
     private int toColIdx;
     private boolean usesOffset;
     private String defaultValue;
+    private int translationRow;
 
     /**
      * Define a cell to cell mapping between two excel files.
@@ -29,25 +30,30 @@ public class Mapping {
      * @param toColIdx cell column in TO the excel file
      * @param usesOffset indicates whether the TO column index is computed dynamically.
      */
-    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue, int translationRow) {
         this.fromRowIdx = fromRowIdx;
         this.fromColIdx = fromColIdx;
         this.toRowIdx = toRowIdx;
         this.toColIdx = toColIdx;
         this.usesOffset = usesOffset;
         this.defaultValue = defaultValue;
+        this.translationRow = translationRow;
     }
 
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "");
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", -1);
+    }
+
+    public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, int translationRow) {
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", translationRow);
     }
 
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "");
+        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "", -1);
     }
 
     public Mapping(int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
-        this(-1, -1, toRowIdx, toColIdx, usesOffset, defaultValue);
+        this(-1, -1, toRowIdx, toColIdx, usesOffset, defaultValue, -1);
     }
 
     public int getFromRowIndex() {
@@ -76,5 +82,13 @@ public class Mapping {
 
     public boolean hasDefaultValue() {
         return defaultValue != "";
+    }
+
+    public boolean hasTranslation() {
+        return translationRow > -1;
+    }
+
+    public int getTranslationRow() {
+        return translationRow;
     }
 }
