@@ -1,6 +1,14 @@
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+/**
+ * This program copies the content of some cells in a given excel file into some other cells
+ * in another excel file. To determine which cell is mapped to which cell in the other file,
+ * a mapping file has to be provided. This file is located at `./data/`.
+ *
+ * Currently, only .xlsx files are supported.
+ *
+ * This program requires two user arguments. Both arguments model paths to excel files.
+ * The 1st path points to the excel file we want to read from,
+ * The 2nd path points to the excel file we want to write to.
+ */
 public class Main {
     /**
      * @example
@@ -9,27 +17,18 @@ public class Main {
      *  the first path directs to the parent form, the successor files to the children excel sheets.
      */
     public static void main(String[] args) {
-        // TODO export this to a file
-        String mappingFilePath = "data/mappings.txt";
-
+        Properties.initialize(args);
         System.out.println("Reading excel files...");
-        ExcelFile fromExcel = null;
-        ExcelFile toExcel = null;
         try {
-            Path pathIn = Paths.get(args[0]);
-            Path pathOut = Paths.get(args[1]);
-
             // excel = new ExcelFile(path.toString(), 5);
-
-            fromExcel = new ExcelFile(pathIn.toString(), 0);
-            toExcel = new ExcelFile(pathOut.toString(), 0);
+            ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath(), 0);
+            ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath(), 0);
             System.out.println(" => Excel files read.");
+            new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
+            toExcel.save();
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
-        new Consolidator(mappingFilePath, fromExcel, toExcel);
-        toExcel.save();
     }
 }
