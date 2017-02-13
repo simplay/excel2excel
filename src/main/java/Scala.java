@@ -7,6 +7,8 @@ import java.util.ArrayList;
  * Scala s = new Scala();
  * s.appendItem("m", "1")
  * s.appendItem("f", "2")
+ *
+ * Attempts to append an already existing scala value will be ignored.
  */
 public class Scala {
     private ArrayList<String> labels;
@@ -24,8 +26,10 @@ public class Scala {
      * @param value numeric scala values.
      */
     public void appendItem(String label, int value) {
-        labels.add(label);
-        values.add(value);
+        if (!labels.contains(label)) {
+            labels.add(label);
+            values.add(value);
+        }
     }
 
     /**
