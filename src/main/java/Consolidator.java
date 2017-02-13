@@ -38,9 +38,9 @@ public class Consolidator extends FileReader{
 
             int toColumnIndex = mapping.getToColumnIndex();
             if (mapping.usesOffset()) {
-                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIdx(), mapping.getToColumnIndex());
+                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex());
             }
-            outExcel.writeCell(fromValue, mapping.getToRowIdx(), toColumnIndex);
+            outExcel.writeCell(fromValue, mapping.getToRowIndex(), toColumnIndex);
         }
     }
 

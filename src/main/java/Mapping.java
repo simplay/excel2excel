@@ -40,18 +40,53 @@ public class Mapping {
         this.translationRow = translationRow;
     }
 
+    /**
+     * Mapping with optional propagation of the column
+     *
+     * @param fromRowIdx
+     * @param fromColIdx
+     * @param toRowIdx
+     * @param toColIdx
+     * @param usesOffset
+     */
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
         this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", -1);
     }
 
+    /**
+     * Mapping with translation
+     *
+     * @param fromRowIdx
+     * @param fromColIdx
+     * @param toRowIdx
+     * @param toColIdx
+     * @param usesOffset
+     * @param translationRow
+     */
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, int translationRow) {
         this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", translationRow);
     }
 
+    /**
+     * Simple mapping: use the content of one cell and copy it to another cell.
+     *
+     * @param fromRowIdx
+     * @param fromColIdx
+     * @param toRowIdx
+     * @param toColIdx
+     */
     public Mapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
         this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "", -1);
     }
 
+    /**
+     * Apply a fixed value to a cell
+     *
+     * @param toRowIdx
+     * @param toColIdx
+     * @param usesOffset
+     * @param defaultValue
+     */
     public Mapping(int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
         this(-1, -1, toRowIdx, toColIdx, usesOffset, defaultValue, -1);
     }
@@ -64,7 +99,7 @@ public class Mapping {
         return fromColIdx;
     }
 
-    public int getToRowIdx() {
+    public int getToRowIndex() {
         return toRowIdx;
     }
 

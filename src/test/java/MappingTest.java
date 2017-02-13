@@ -1,0 +1,80 @@
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class MappingTest {
+
+    @Test
+    public void testCreateSimpleFromToMapping() {
+        Mapping m = new Mapping(1, 2, 3, 4);
+
+        assertEquals(1, m.getFromRowIndex());
+        assertEquals(2, m.getFromColumnIndex());
+        assertEquals(3, m.getToRowIndex());
+        assertEquals(4, m.getToColumnIndex());
+
+        assertFalse(m.hasTranslation());
+        assertEquals(-1, m.getTranslationRow());
+
+        assertFalse(m.hasDefaultValue());
+        assertEquals("", m.getDefaultValue());
+
+        assertFalse(m.usesOffset());
+    }
+
+    @Test
+    public void testCreateWithDefault() {
+        Mapping m = new Mapping(1, 2, true, "foobar");
+
+        assertEquals(-1, m.getFromRowIndex());
+        assertEquals(-1, m.getFromColumnIndex());
+        assertEquals(1, m.getToRowIndex());
+        assertEquals(2, m.getToColumnIndex());
+
+        assertFalse(m.hasTranslation());
+        assertEquals(-1, m.getTranslationRow());
+
+        assertTrue(m.hasDefaultValue());
+        assertEquals("foobar", m.getDefaultValue());
+
+        assertTrue(m.usesOffset());
+    }
+
+    @Test
+    public void testCreateWithCascadingColumn() {
+        Mapping m = new Mapping(1, 2, 3, 4, false);
+
+        assertEquals(1, m.getFromRowIndex());
+        assertEquals(2, m.getFromColumnIndex());
+        assertEquals(3, m.getToRowIndex());
+        assertEquals(4, m.getToColumnIndex());
+
+        assertFalse(m.hasTranslation());
+        assertEquals(-1, m.getTranslationRow());
+
+        assertFalse(m.hasDefaultValue());
+        assertEquals("", m.getDefaultValue());
+
+        assertFalse(m.usesOffset());
+    }
+
+    @Test
+    public void testCreateWithTranslationRow() {
+        Mapping m = new Mapping(1, 2, 3, 4, true, 5);
+
+        assertEquals(1, m.getFromRowIndex());
+        assertEquals(2, m.getFromColumnIndex());
+        assertEquals(3, m.getToRowIndex());
+        assertEquals(4, m.getToColumnIndex());
+
+        assertTrue(m.hasTranslation());
+        assertEquals(5, m.getTranslationRow());
+
+        assertFalse(m.hasDefaultValue());
+        assertEquals("", m.getDefaultValue());
+
+        assertTrue(m.usesOffset());
+    }
+}
