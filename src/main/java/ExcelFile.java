@@ -109,9 +109,13 @@ public class ExcelFile {
         int colIdx = startColIdx;
         XSSFCell content;
         do {
-            content = getRow(rowIdx).getCell(colIdx);
+            XSSFRow row = getRow(rowIdx);
+            if (row == null) break;
+            content = row.getCell(colIdx);
+            
             colIdx++;
         } while (content != null);
+        if (colIdx == startColIdx) return startColIdx;
         return colIdx - 1;
     }
 
@@ -127,7 +131,12 @@ public class ExcelFile {
      */
     public String getCellValue(int rowIdx, int columnIdx) {
         String cellContent = "";
+        XSSFRow row = getRow(rowIdx);
+        if (row == null) return null;
+
         XSSFCell cell = getRow(rowIdx).getCell(columnIdx);
+        if (cell == null) return null;
+
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_STRING:
                 cellContent = String.valueOf(cell.getStringCellValue());

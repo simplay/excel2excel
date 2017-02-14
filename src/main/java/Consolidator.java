@@ -37,6 +37,8 @@ public class Consolidator extends FileReader{
             }
 
             int toColumnIndex = mapping.getToColumnIndex();
+
+            // TODO: Do this just once in the very beginning to determine the target column
             if (mapping.usesOffset()) {
                 toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex());
             }
