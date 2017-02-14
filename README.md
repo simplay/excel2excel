@@ -4,6 +4,8 @@ Copy the content of an excel documents to another excel document.
 In order to decide which cell in the FROM file is mapped to 
 which other cell in the TO file, one has to define a cell mapping.
 
+This project is licensed under the [MIT License](https://github.com/simplay/excel2excel/blob/master/LICENSE).
+
 ## Runtime Arguments
 
 The program can take up to four arguments.
@@ -45,3 +47,11 @@ bx by rep default
 0 1 1 "foobar"
 3 1 1 1 1 0
 ```
+
+## Contributing
+
+1. Fork this repository
+2. Create your feature branch `git checkout -b my-new-feature`
+3. Commit your changes `git commit -am "Add some feature"`
+4. Push to the branch `git push origin my-new-feature`
+5. Create new Pull Request (in your forked repository)
