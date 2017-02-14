@@ -3,6 +3,14 @@ import java.nio.file.Paths;
 /**
  * Singleton carrying all project relevant properties
  * such as all file paths.
+ *
+ * Works with the user arguments, where the
+ * 1st arguments is the relative file name / path to the FROM excel file (required)
+ * 2nd arguments is the relative file name / path to the TO excel file (required)
+ * 3rd arguments is the relative file name / path to the cell mapping file  (optional)
+ * 4th arguments is the relative file name / path to the scala file (optional)
+ *
+ * Is properly initialized by calling #initialize
  */
 public class Properties {
     private static Properties instance;
@@ -15,6 +23,18 @@ public class Properties {
         return instance;
     }
 
+    /**
+     * Clear the internal state
+     */
+    public static void clear() {
+        instance = null;
+    }
+
+    /**
+     * Get the singleton
+     *
+     * @return properties singleton
+     */
     public static Properties getInstance() {
         return getInstance(null);
     }
@@ -54,6 +74,7 @@ public class Properties {
     }
 
     public boolean hasContentAt(int idx) {
+        if (userParameters == null ) return false;
         return idx <= userParameters.length - 1;
     }
 }
