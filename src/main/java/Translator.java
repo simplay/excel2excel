@@ -9,10 +9,20 @@ public class Translator extends FileReader{
 
     private final ArrayList<Scala> scalas = new ArrayList<Scala>() ;
 
+    /**
+     * Get all scalas
+     *
+     * @return scala collection
+     */
     public ArrayList<Scala> getScalas() {
         return scalas;
     }
 
+    /**
+     * Fetch the Translator singleton
+     *
+     * @return singleton
+     */
     public static Translator getInstance() {
         if (instance == null) {
             instance = new Translator();
