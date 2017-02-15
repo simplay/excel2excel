@@ -2,20 +2,20 @@ import java.util.ArrayList;
 
 /**
  * A Translator allow to translate symbolic values to numeric values
- * according to a certain scala.
+ * according to a certain scale.
  */
 public class Translator extends FileReader{
     private static Translator instance;
 
-    private final ArrayList<Scala> scalas = new ArrayList<Scala>() ;
+    private final ArrayList<Scale> scales = new ArrayList<Scale>() ;
 
     /**
-     * Get all scalas
+     * Get all scales
      *
-     * @return scala collection
+     * @return scale collection
      */
-    public ArrayList<Scala> getScalas() {
-        return scalas;
+    public ArrayList<Scale> getScales() {
+        return scales;
     }
 
     /**
@@ -31,11 +31,11 @@ public class Translator extends FileReader{
     }
 
     public Translator() {
-        readFile(Properties.getScalaValuesFilePath());
+        readFile(Properties.getScaleValuesFilePath());
     }
 
     /**
-     * Lookup the the numeric values from target scala, given
+     * Lookup the the numeric values from target scale, given
      * a certain symbolic representation.
      * 
      * @param lookupRow
@@ -43,20 +43,20 @@ public class Translator extends FileReader{
      * @return
      */
     public static String lookup(int lookupRow, String toBeTranslated) {
-        Scala scala = getInstance().getScalas().get(lookupRow);
-        return Integer.toString(scala.getValueByLabel(toBeTranslated));
+        Scale scale = getInstance().getScales().get(lookupRow);
+        return Integer.toString(scale.getValueByLabel(toBeTranslated));
     }
 
     @Override
     protected void processLine(String line) {
         String[] row = line.split(" ");
         int itemCount = row.length / 2;
-        Scala scala = new Scala();
+        Scale scale = new Scale();
         for (int k = 0; k < itemCount; k++) {
             String label = row[k];
             int value = Integer.parseInt(row[k + itemCount]);
-            scala.appendItem(label, value);
+            scale.appendItem(label, value);
         }
-        scalas.add(scala);
+        scales.add(scale);
     }
 }

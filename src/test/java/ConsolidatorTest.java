@@ -80,10 +80,10 @@ public class ConsolidatorTest {
     @Test
     public void testCopyWithScalaTranslation() {
         String[] args = {
-                "src/test/data/scala_values.xlsx",
+                "src/test/data/scale_values.xlsx",
                 TestHelper.getWritableFilePath(),
-                "src/test/data/mappingsWithScala.txt",
-                "src/test/data/scala_values.txt"
+                "src/test/data/mappingsWithScale.txt",
+                "src/test/data/scale_values.txt"
         };
         Properties.initialize(args);
         ExcelFile src = new ExcelFile(Properties.getFromExcelFilePath());

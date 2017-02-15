@@ -17,10 +17,10 @@ public class TranslatorTest {
     @Before
     public void initialize() {
         String[] args = {
-                "src/test/data/scala_values.xlsx",
+                "src/test/data/scale_values.xlsx",
                 TestHelper.getWritableFilePath(),
-                "src/test/data/mappingsWithScala.txt",
-                "src/test/data/scala_values.txt"
+                "src/test/data/mappingsWithScale.txt",
+                "src/test/data/scale_values.txt"
         };
         Properties.initialize(args);
     }
@@ -43,15 +43,15 @@ public class TranslatorTest {
 
     @Test
     public void tesGetScalas() {
-        ArrayList<Scala> scalas = Translator.getInstance().getScalas();
+        ArrayList<Scale> scales = Translator.getInstance().getScales();
         String[] gtScalaSymbols = {"R", "G", "B", "X", "Y", "Z", "U", "V", "W"};
         int[] gtScalaValues = {1, 2, 3, 10, 11, 12, 23, 34, 45};
 
         int idx = 0;
-        for (Scala scala : scalas) {
-            int value1 = scala.getValueByLabel(gtScalaSymbols[idx]);
-            int value2 = scala.getValueByLabel(gtScalaSymbols[idx + 1]);
-            int value3 = scala.getValueByLabel(gtScalaSymbols[idx + 2]);
+        for (Scale scale : scales) {
+            int value1 = scale.getValueByLabel(gtScalaSymbols[idx]);
+            int value2 = scale.getValueByLabel(gtScalaSymbols[idx + 1]);
+            int value3 = scale.getValueByLabel(gtScalaSymbols[idx + 2]);
             assertEquals(gtScalaValues[idx], value1);
             assertEquals(gtScalaValues[idx + 1], value2);
             assertEquals(gtScalaValues[idx + 2], value3);

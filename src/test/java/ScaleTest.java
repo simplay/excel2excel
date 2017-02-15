@@ -2,11 +2,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ScalaTest {
+public class ScaleTest {
 
     @Test
     public void testCanFetchAppendedItem() {
-        Scala s = new Scala();
+        Scale s = new Scale();
 
         String label = "a_fancy_label";
         int numericLabelValue = 1337;
@@ -17,7 +17,7 @@ public class ScalaTest {
 
     @Test
     public void testCanFetchMultipleAppendedItems() {
-        Scala s = new Scala();
+        Scale s = new Scale();
 
         String[] labels = {"foo", "bar", "baz"};
         int[] values = {11, 22, 33};
@@ -33,13 +33,13 @@ public class ScalaTest {
 
     @Test
     public void testCannotFetchInexistentItem() {
-        Scala s = new Scala();
+        Scale s = new Scale();
         assertEquals(-1, s.getValueByLabel("male"));
     }
 
     @Test
     public void testCanOnlyFetchAppendedItems() {
-        Scala s = new Scala();
+        Scale s = new Scale();
         assertEquals(-1, s.getValueByLabel("male"));
         assertEquals(-1, s.getValueByLabel("female"));
 
@@ -52,7 +52,7 @@ public class ScalaTest {
 
     @Test
     public void testAppendItemIgnoresAddingSameItemManyTimes() {
-        Scala s = new Scala();
+        Scale s = new Scale();
 
         s.appendItem("happy", 5);
         s.appendItem("happy", 2);

@@ -8,7 +8,7 @@ import java.nio.file.Paths;
  * 1st arguments is the relative file name / path to the FROM excel file (required)
  * 2nd arguments is the relative file name / path to the TO excel file (required)
  * 3rd arguments is the relative file name / path to the cell mapping file  (optional)
- * 4th arguments is the relative file name / path to the scala file (optional)
+ * 4th arguments is the relative file name / path to the scale file (optional)
  *
  * Is properly initialized by calling #initialize
  */
@@ -54,11 +54,11 @@ public class Properties {
         return Paths.get("data/mappings.txt").toString();
     }
 
-    public static String getScalaValuesFilePath() {
+    public static String getScaleValuesFilePath() {
         if (getInstance().hasContentAt(3)) {
             return getInstance().getPathAt(3);
         }
-        return Paths.get("data/scala_values.txt").toString();
+        return Paths.get("data/scale_values.txt").toString();
     }
 
     public static String getFromExcelFilePath() {

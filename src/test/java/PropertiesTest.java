@@ -12,7 +12,7 @@ public class PropertiesTest {
 
     @Test
     public void testHasExpectedDefaults() {
-        assertEquals("data/scala_values.txt", Properties.getScalaValuesFilePath());
+        assertEquals("data/scale_values.txt", Properties.getScaleValuesFilePath());
         assertEquals("data/mappings.txt", Properties.getMappingFilePath());
     }
 
@@ -28,6 +28,6 @@ public class PropertiesTest {
         assertEquals(args[0], Properties.getFromExcelFilePath());
         assertEquals(args[1], Properties.getToExcelFilePath());
         assertEquals(args[2], Properties.getMappingFilePath());
-        assertEquals(args[3], Properties.getScalaValuesFilePath());
+        assertEquals(args[3], Properties.getScaleValuesFilePath());
     }
 }
