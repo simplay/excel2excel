@@ -38,6 +38,21 @@ public class ExcelFileTest {
     }
 
     @Test
+    public void testSimpleConstructurUsesFirstExcelSheet() {
+        ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
+        ExcelFile excelZero = new ExcelFile(TestHelper.getReadOnlyFilePath());
+        assertEquals(excelZero.getCellValue(0, 0), excel.getCellValue(0, 0));
+        assertEquals(excelZero.getCellValue(0, 1), excel.getCellValue(0, 1));
+        assertEquals(excelZero.getCellValue(0, 2), excel.getCellValue(0, 2));
+        assertEquals(excelZero.getCellValue(1, 0), excel.getCellValue(1, 0));
+        assertEquals(excelZero.getCellValue(1, 1), excel.getCellValue(1, 1));
+        assertEquals(excelZero.getCellValue(1, 2), excel.getCellValue(1, 2));
+        assertEquals(excelZero.getCellValue(2, 0), excel.getCellValue(2, 0));
+        assertEquals(excelZero.getCellValue(2, 1), excel.getCellValue(2, 1));
+        assertEquals(excelZero.getCellValue(2, 2), excel.getCellValue(2, 2));
+    }
+
+    @Test
     public void testAccessingInexistentCellYieldsNull() {
         ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
         assertEquals(null, excel.getCellValue(1337, 1337));

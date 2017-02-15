@@ -21,8 +21,8 @@ public class Main {
         System.out.println("Reading excel files...");
         try {
             // excel = new ExcelFile(path.toString(), 5);
-            ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath(), 0);
-            ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath(), 0);
+            ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath());
+            ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath());
             System.out.println(" => Excel files read.");
             new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
             toExcel.save();

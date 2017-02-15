@@ -20,10 +20,11 @@ public class ExcelFile {
     private String filePath;
 
     /**
+     * Load a excel file by its path and sheet nr.
      *
      * @param filePath path to target file. Please stick to
      *  the OS specific path naming conventions.
-     * @param sheetNr relevant sheet inside excel file
+     * @param sheetNr relevant sheet inside excel file that should be loaded.
      */
     public ExcelFile(String filePath, int sheetNr) {
         this.filePath = filePath;
@@ -40,6 +41,16 @@ public class ExcelFile {
 
         // Return first sheet from the XLSX workbook
         sheet = workbook.getSheetAt(sheetNr);
+    }
+
+    /**
+     * Load the first excel sheet
+     *
+     * @param filePath path to target file. Please stick to
+     *  the OS specific path naming conventions.
+     */
+    public ExcelFile(String filePath) {
+        this(filePath, 0);
     }
 
     /**
