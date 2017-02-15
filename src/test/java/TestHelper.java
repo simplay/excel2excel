@@ -23,6 +23,10 @@ public class TestHelper {
         return  "src/test/data/dummy_input.xlsx";
     }
 
+    public static String getMappingFilePath() {
+        return "src/test/data/mappings.txt";
+    }
+
     // Delete dirty output files, generated when running certain tests.
     public static void cleanup() {
         deleteFile("src/test/writer_test.xlsx");

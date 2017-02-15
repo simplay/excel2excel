@@ -1,6 +1,5 @@
 import org.junit.After;
 import org.junit.Test;
-import org.junit.experimental.theories.PotentialAssignment;
 
 import static org.junit.Assert.assertEquals;
 
