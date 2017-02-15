@@ -10,6 +10,7 @@ public class TestHelper {
     public static void prepare() {
         try {
             copyFile("src/test/data/empty_file.xlsx", "src/test/writer_test.xlsx");
+            Logger.getInstance(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

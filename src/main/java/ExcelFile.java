@@ -69,13 +69,13 @@ public class ExcelFile {
 
         row = getRow(rowIdx);
         if (row == null) {
-            System.err.println("Row " + rowIdx + " does yet not exist. Creating new row...");
+            Logger.printError("Row " + rowIdx + " does yet not exist. Creating new row...");
             row = getSheet().createRow(rowIdx);
         }
 
         cell = row.getCell(columnIdx);
         if (cell == null) {
-            System.err.println("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
+            Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
             cell = row.createCell(columnIdx);
         }
 
