@@ -22,6 +22,7 @@ public class Scale {
     /**
      * Append a new item to the scale. An item consists of a symbolic
      * label and an integer values.
+     *
      * @param label symbolic representation of scale values.
      * @param value numeric scale values.
      */

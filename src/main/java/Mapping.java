@@ -116,7 +116,7 @@ public class Mapping {
     }
 
     public boolean hasDefaultValue() {
-        return defaultValue != "";
+        return !defaultValue.equals("");
     }
 
     public boolean hasTranslation() {
