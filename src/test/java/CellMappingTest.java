@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class MappingTest {
+public class CellMappingTest {
 
     @Test
     public void testCreateSimpleFromToMapping() {
-        Mapping m = new Mapping(1, 2, 3, 4);
+        CellMapping m = new CellMapping(1, 2, 3, 4);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());
@@ -26,7 +26,7 @@ public class MappingTest {
 
     @Test
     public void testCreateWithDefault() {
-        Mapping m = new Mapping(1, 2, true, "foobar");
+        CellMapping m = new CellMapping(1, 2, true, "foobar");
 
         assertEquals(-1, m.getFromRowIndex());
         assertEquals(-1, m.getFromColumnIndex());
@@ -44,7 +44,7 @@ public class MappingTest {
 
     @Test
     public void testCreateWithCascadingColumn() {
-        Mapping m = new Mapping(1, 2, 3, 4, false);
+        CellMapping m = new CellMapping(1, 2, 3, 4, false);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());
@@ -62,7 +62,7 @@ public class MappingTest {
 
     @Test
     public void testCreateWithTranslationRow() {
-        Mapping m = new Mapping(1, 2, 3, 4, true, 5);
+        CellMapping m = new CellMapping(1, 2, 3, 4, true, 5);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());

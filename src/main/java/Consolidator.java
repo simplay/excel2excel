@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * the files (from file A to file B).
  */
 public class Consolidator extends FileReader{
-    private final ArrayList<Mapping> mappings = new ArrayList<Mapping>();
+    private final ArrayList<CellMapping> cellMappings = new ArrayList<CellMapping>();
     private ExcelFile inExcel;
     private ExcelFile outExcel;
 
@@ -27,22 +27,22 @@ public class Consolidator extends FileReader{
      * Takes ever FROM cell and writes it to the corresponding location in the TO excel file.
      */
     private void mergeExcelFiles() {
-        for (Mapping mapping : mappings) {
-            String fromValue = mapping.getDefaultValue();
-            if (!mapping.hasDefaultValue()) {
-                fromValue = inExcel.getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
-                if (mapping.hasTranslation()) {
-                    fromValue = Translator.lookup(mapping.getTranslationRow(), fromValue);
+        for (CellMapping cellMapping : cellMappings) {
+            String fromValue = cellMapping.getDefaultValue();
+            if (!cellMapping.hasDefaultValue()) {
+                fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
+                if (cellMapping.hasTranslation()) {
+                    fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
                 }
             }
 
-            int toColumnIndex = mapping.getToColumnIndex();
+            int toColumnIndex = cellMapping.getToColumnIndex();
 
             // TODO: Do this just once in the very beginning to determine the target column
-            if (mapping.usesOffset()) {
-                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex());
+            if (cellMapping.usesOffset()) {
+                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex());
             }
-            outExcel.writeCell(fromValue, mapping.getToRowIndex(), toColumnIndex);
+            outExcel.writeCell(fromValue, cellMapping.getToRowIndex(), toColumnIndex);
         }
     }
 
@@ -62,19 +62,19 @@ public class Consolidator extends FileReader{
             boolean usesOffset = (row[row.length - 2].equals("1"));
             String defaultValue = row[row.length - 1];
             defaultValue = defaultValue.replace("\"", "");
-            mappings.add(new Mapping(toRowIdx, toColIdx, usesOffset, defaultValue));
+            cellMappings.add(new CellMapping(toRowIdx, toColIdx, usesOffset, defaultValue));
             return;
         }
 
         int[] items = parseToIntegerArray(row);
         if (items.length > 5) {
             boolean usesOffset = (items[4] == 1);
-            mappings.add(new Mapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
+            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
         } else if (items.length > 4) {
             boolean usesOffset = (items[4] == 1);
-            mappings.add(new Mapping(items[0], items[1], items[2], items[3], usesOffset));
+            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset));
         } else {
-            mappings.add(new Mapping(items[0], items[1], items[2], items[3]));
+            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3]));
         }
     }
 }

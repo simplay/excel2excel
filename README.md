@@ -2,7 +2,7 @@
 
 Copy the content of an excel documents to another excel document.
 In order to decide which cell in the FROM file is mapped to 
-which other cell in the TO file, one has to define a cell mapping.
+which other cell in the TO file, one has to define a cell cellMapping.
 
 This project is licensed under the [MIT License](https://github.com/simplay/excel2excel/blob/master/LICENSE).
 
@@ -11,12 +11,12 @@ This project is licensed under the [MIT License](https://github.com/simplay/exce
 The program can take up to four arguments.
 The 1st argument is the path to the FROM excel file and and is required.
 The 2nd argument is the path to the TO excel file and is required.
-The 3rd argument is the path to a custom mapping file and is optional.
+The 3rd argument is the path to a custom cellMapping file and is optional.
 The 4th argument is the path to a custom scale_values file and is optional.
 
-## Define a Cell Mapping File
+## Define a Cell CellMapping File
 
-The mapping is defined in a text file called `mappings.txt` which is supposed to be located
+The cellMapping is defined in a text file called `mappings.txt` which is supposed to be located
 at `./data/`. The file consists of a series of lines, where each line is series of n whitespace separated strings.
 Currently, there are four different formats supported.
 
@@ -35,7 +35,7 @@ bx by rep default
 + `by`: The column cell index of a TO excel file. The excel index 1 or A respectively gets mapped to the index 0.
 + `rep`: Indicates whether should we append the values to the next free column in the TO file at the given TO row index.
 + `mappingId`: The looked up value in the FROM cell gets translated to a numeric value according to a certain scale. The scale is identified by this id. This value is between zero and the number of rows in `scale_values.txt` minus 1, i.e. the specified index value directly maps to the row in this file.
-+ `default`: Instead of using a value from a FROM excel file, we use a default / constant and replicate it in the TO excel file. Such defaults represent a certain String. Strings in a mapping file are enclosed by quotes (.e. "some_fancy_string"). 
++ `default`: Instead of using a value from a FROM excel file, we use a default / constant and replicate it in the TO excel file. Such defaults represent a certain String. Strings in a cellMapping file are enclosed by quotes (.e. "some_fancy_string"). 
 
 
 ### Example
