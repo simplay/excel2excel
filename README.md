@@ -8,7 +8,11 @@ This project is licensed under the [MIT License](https://github.com/simplay/exce
 
 ## Build an executable Jar
 
-Run `mvn clean dependency:copy-dependencies package`
+Run `mvn clean dependency:copy-dependencies package` in your terminal. This will generate a executable jar file `excel2excel-1.0-SNAPSHOT.jar` located at `./target/`.
+
+## Run the Jar
+
+To execute the Jar, run `java -jar target/foobar-1.0-SNAPSHOT.jar` within the project's root directory.
 
 ## Runtime Arguments
 
