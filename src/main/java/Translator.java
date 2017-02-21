@@ -5,8 +5,14 @@ import java.util.ArrayList;
  * according to a certain scale.
  */
 public class Translator extends FileReader{
+
+    // singleton instance
     private static Translator instance;
 
+    // Elements are whitespace separated
+    private final String DELIMITER = " ";
+
+    // Collection of read scale instances
     private final ArrayList<Scale> scales = new ArrayList<Scale>() ;
 
     /**
@@ -30,7 +36,7 @@ public class Translator extends FileReader{
         return instance;
     }
 
-    public Translator() {
+    private Translator() {
         readFile(Properties.getScaleValuesFilePath());
     }
 
@@ -47,9 +53,18 @@ public class Translator extends FileReader{
         return Integer.toString(scale.getValueByLabel(toBeTranslated));
     }
 
+    /**
+     * Extracts the content of a scale file
+     * The items are supposed to be whitespace separated.
+     * @info: Every scale instance is formed by a symbolic-
+     *  and a numerical value. Thus, a valid scale file line
+     *  consists of 2*n elements (i.e. an even number).
+     *
+     * @param line a read file line.
+     */
     @Override
     protected void processLine(String line) {
-        String[] row = line.split(" ");
+        String[] row = line.split(DELIMITER);
         int itemCount = row.length / 2;
         Scale scale = new Scale();
         for (int k = 0; k < itemCount; k++) {

@@ -9,11 +9,22 @@ import java.util.ArrayList;
  * s.appendItem("f", "2")
  *
  * Attempts to append an already existing scale value will be ignored.
+ *
  */
 public class Scale {
+
+    // The labels represent the symbolic value of a scale.
+    // The k-th label element belongs to the k-th value element
     private ArrayList<String> labels;
+
+    // the values represent the numerical value of a scale.
+    // The k-th value element belongs to the k-th label element
     private ArrayList<Integer> values;
 
+    /**
+     * Form an empty scale which consists of a series of
+     * numerical and symbolic values.
+     */
     public Scale() {
         labels = new ArrayList<String>();
         values = new ArrayList<Integer>();
