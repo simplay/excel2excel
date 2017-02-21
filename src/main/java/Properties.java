@@ -51,14 +51,14 @@ public class Properties {
         if (getInstance().hasContentAt(2)) {
             return getInstance().getPathAt(2);
         }
-        return Paths.get("data/mappings.txt").toString();
+        return Paths.get("data", "mappings.txt").toString();
     }
 
     public static String getScaleValuesFilePath() {
         if (getInstance().hasContentAt(3)) {
             return getInstance().getPathAt(3);
         }
-        return Paths.get("data/scale_values.txt").toString();
+        return Paths.get("data", "scale_values.txt").toString();
     }
 
     public static String getFromExcelFilePath() {

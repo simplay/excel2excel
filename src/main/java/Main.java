@@ -18,18 +18,6 @@ public class Main {
      */
     public static void main(String[] args) {
         Properties.initialize(args);
-        Logger.println("Reading excel files...");
-        try {
-            // excel = new ExcelFile(path.toString(), 5);
-            ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath());
-            ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath());
-            Logger.println(" => Excel files read.");
-            new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
-            toExcel.save();
-            Logger.writeLog();
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        new Gui(args);
     }
 }

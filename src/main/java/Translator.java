@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * A Translator allow to translate symbolic values to numeric values
+ * A Translator offers to translate symbolic values to numeric values
  * according to a certain scale.
  */
 public class Translator extends FileReader{
