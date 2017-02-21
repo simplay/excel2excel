@@ -6,6 +6,10 @@ which other cell in the TO file, one has to define a cell cellMapping.
 
 This project is licensed under the [MIT License](https://github.com/simplay/excel2excel/blob/master/LICENSE).
 
+## Build an executable Jar
+
+Run `mvn clean dependency:copy-dependencies package`
+
 ## Runtime Arguments
 
 The program can take up to four arguments.
