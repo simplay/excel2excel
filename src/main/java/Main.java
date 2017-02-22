@@ -17,7 +17,10 @@ public class Main {
      *  the first path directs to the parent form, the successor files to the children excel sheets.
      */
     public static void main(String[] args) {
-        Properties.initialize(args);
+        Logger.println("Starting Excel2Excel");
+        if (args.length > 0) {
+            Properties.initialize(args);
+        }
         new Gui(args);
     }
 }

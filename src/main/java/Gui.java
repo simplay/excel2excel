@@ -59,9 +59,8 @@ public class Gui extends Frame{
                 };
                 Properties.initialize(args);
                 try {
+                    Properties.reportPaths();
                     Logger.println("Reading excel files...");
-                    Logger.println("=> FROM excel file path: " + fromExcelPath);
-                    Logger.println("=> TO excel file path: " + toExcelPath);
                     Logger.println();
 
                     ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath());

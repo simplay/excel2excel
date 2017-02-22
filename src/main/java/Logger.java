@@ -19,9 +19,6 @@ public class Logger {
     // Unique identifier used for the status filename.
     private long timestamp;
 
-    // Output path root
-    private final String outputPath = Paths.get("logs").toString();
-
     // Logger messages that should be written to a status file.
     private final LinkedList<String> buffer = new LinkedList<String>();
 
@@ -145,7 +142,7 @@ public class Logger {
      * to `../output/logs/`
      */
     public void writeLogFile() {
-        String fileName = outputPath + Paths.get("/log_" + timestamp + ".txt").toString();
+        String fileName = Paths.get("logs", "log_" + timestamp + ".txt").toString();
         try {
             writeFile(buffer, fileName);
         } catch (IOException e) {

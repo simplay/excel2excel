@@ -1,3 +1,5 @@
+import sun.rmi.runtime.Log;
+
 import java.nio.file.Paths;
 
 /**
@@ -76,5 +78,12 @@ public class Properties {
     public boolean hasContentAt(int idx) {
         if (userParameters == null ) return false;
         return idx <= userParameters.length - 1;
+    }
+
+    public static void reportPaths() {
+        Logger.println("Using FROM PATH: " + getFromExcelFilePath());
+        Logger.println("Using TO PATH: " + getToExcelFilePath());
+        Logger.println("Using MAPPING PATH: " + getMappingFilePath());
+        Logger.println("Using SCALE PATH: " + getScaleValuesFilePath());
     }
 }
