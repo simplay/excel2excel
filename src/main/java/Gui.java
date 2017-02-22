@@ -5,12 +5,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.file.Paths;
 
-public class Gui extends Frame{
+/**
+ * A very basic graphical user interface that allows to easily specify
+ * the FROM and TO excel file paths and start the actual cell copy process.
+ */
+public class Gui extends Frame {
 
     private final int width = 400;
     private final int height = 100;
-    private final Panel panel= new Panel();
-    private FileDialog fd;
+    private final Panel panel = new Panel();
+    private FileDialog fileDialog;
 
     private String[] userInput;
     private String fromExcelPath = "";
@@ -34,19 +38,19 @@ public class Gui extends Frame{
         panel.add(copyToButton);
         panel.add(copyButton);
 
-        fd = new FileDialog(this, "Choose From Excel File");
+        fileDialog = new FileDialog(this, "Choose From Excel File");
         copyFromButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                fd.setVisible(true);
-                fromExcelPath = Paths.get(fd.getDirectory(), fd.getFile()).toString();
+                fileDialog.setVisible(true);
+                fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
             }
         });
 
-        fd = new FileDialog(this, "Choose To Excel File");
+        fileDialog = new FileDialog(this, "Choose To Excel File");
         copyToButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                fd.setVisible(true);
-                toExcelPath = Paths.get(fd.getDirectory(), fd.getFile()).toString();
+                fileDialog.setVisible(true);
+                toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
             }
         });
 
@@ -61,18 +65,17 @@ public class Gui extends Frame{
                 try {
                     Properties.reportPaths();
                     Logger.println("Reading excel files...");
-                    Logger.println();
-
                     ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath());
                     ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath());
                     Logger.println(" => Excel files read.");
-                    Logger.println("Copy content from FROM excel file to TO file...");
+                    Logger.println("Copying content from FROM excel file to TO file...");
                     new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
                     Logger.println(" => Content copied.");
+                    Logger.println("Saving TO excel file...");
                     toExcel.save();
                     Logger.println(" => TO file saved.");
+                    Logger.println("Excel2Excel successfully finished.");
                     Logger.writeLog();
-
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                 }

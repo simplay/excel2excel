@@ -80,10 +80,14 @@ public class Properties {
         return idx <= userParameters.length - 1;
     }
 
+    /**
+     * Report assigned paths
+     */
     public static void reportPaths() {
-        Logger.println("Using FROM PATH: " + getFromExcelFilePath());
-        Logger.println("Using TO PATH: " + getToExcelFilePath());
-        Logger.println("Using MAPPING PATH: " + getMappingFilePath());
-        Logger.println("Using SCALE PATH: " + getScaleValuesFilePath());
+        Logger.println("The following paths are used: ");
+        Logger.println(" + FROM PATH: " + getFromExcelFilePath());
+        Logger.println(" + TO PATH: " + getToExcelFilePath());
+        Logger.println(" + MAPPING PATH: " + getMappingFilePath());
+        Logger.println(" + SCALE PATH: " + getScaleValuesFilePath());
     }
 }
