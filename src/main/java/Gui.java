@@ -15,6 +15,7 @@ public class Gui extends Frame {
     private final int height = 100;
     private final Panel panel = new Panel();
     private FileDialog fileDialog;
+    private boolean useGuiInput;
 
     private String[] userInput;
     private String fromExcelPath = "";
@@ -25,8 +26,9 @@ public class Gui extends Frame {
      *
      * @param userInput optional provided user input
      */
-    public Gui(String[] userInput) {
+    public Gui(final String[] userInput) {
         this.userInput = userInput;
+        useGuiInput = false;
 
         setTitle("Excel2Excel");
         setSize(width, height);
@@ -43,6 +45,7 @@ public class Gui extends Frame {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
                 fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                useGuiInput = true;
             }
         });
 
@@ -51,16 +54,26 @@ public class Gui extends Frame {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
                 toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                useGuiInput = true;
             }
         });
 
         copyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
+                Properties.clear();
+
                 // TODO set mapping and translation file as well
                 String[] args = {
                         fromExcelPath,
                         toExcelPath
                 };
+
+                if (userInput.length > 0 && !useGuiInput) {
+                    Logger.println("Program was invoked with user specified runtime arguments.");
+                    Logger.println(" => Using these arguments to setup paths.");
+                    args = userInput;
+                }
+
                 Properties.initialize(args);
                 try {
                     Properties.reportPaths();
