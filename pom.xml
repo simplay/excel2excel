@@ -7,6 +7,7 @@
     <artifactId>excel2excel</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <build>
         <plugins>
             <plugin>
@@ -24,8 +25,11 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!-- Include internal dependencies in packed jar -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <!-- Defines final base name of packed jar -->
+                    <finalName>excel2excel</finalName>
                     <archive>
                         <manifest>
                             <mainClass>
@@ -36,6 +40,8 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <!-- Do not use jar-with-dependencies in filename -->
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>
         </plugins>

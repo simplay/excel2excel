@@ -8,11 +8,18 @@ This project is licensed under the [MIT License](https://github.com/simplay/exce
 
 ## Build an executable Jar
 
-Run `mvn test clean compile assembly:single` in your terminal. This will generate a executable jar file `excel2excel-1.0-SNAPSHOT.jar` located at `./target/`.
+Run `mvn test clean compile assembly:single` in your terminal. This will generate a executable jar file `excel2excel.jar` located at `./target/`.
+You manually have to setup the expected project structure in order to later execute the jar successfully (see below).
+
+## Expected File Hierarchy
+
+In the same directory, where the `excel2excel.jar` file is located, there have to be two additional
+directories, `./data/` and `./logs/`. The `data` directory contains the mapping and scale files,
+the `logs` directory is used to store log files, which are generated whenever the jar is executed.
 
 ## Run the Jar
 
-To execute the Jar, run `java -jar target/excel2excel1.0-SNAPSHOT.jar` within the project's root directory.
+To execute the Jar, run `java -jar target/excel2excel.jar` within the project's root directory.
 
 ## Runtime Arguments
 
