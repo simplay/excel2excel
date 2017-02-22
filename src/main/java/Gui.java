@@ -78,8 +78,10 @@ public class Gui extends Frame {
                 try {
                     Properties.reportPaths();
                     Logger.println("Reading excel files...");
-                    ExcelFile fromExcel = new ExcelFile(Properties.getFromExcelFilePath());
-                    ExcelFile toExcel = new ExcelFile(Properties.getToExcelFilePath());
+
+                    Excel fromExcel = ExcelBuilder.build(Properties.getFromExcelFilePath());
+                    Excel toExcel = ExcelBuilder.build(Properties.getToExcelFilePath());
+
                     Logger.println(" => Excel files read.");
                     Logger.println("Copying content from FROM excel file to TO file...");
                     new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
@@ -90,7 +92,7 @@ public class Gui extends Frame {
                     Logger.println("Excel2Excel successfully finished.");
                     Logger.writeLog();
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
+                    Logger.printError(e.getMessage());
                 }
             }
         });

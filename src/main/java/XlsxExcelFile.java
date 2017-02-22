@@ -14,7 +14,7 @@ import java.io.*;
  * Indices start counting at 0 whereas in excel the first index is 1.
  * This implies one has to apply manually add an offset of one.
  */
-public class ExcelFile {
+public class XlsxExcelFile extends Excel {
     private XSSFSheet sheet;
     private XSSFWorkbook workbook;
     private String filePath;
@@ -26,7 +26,7 @@ public class ExcelFile {
      *  the OS specific path naming conventions.
      * @param sheetNr relevant sheet inside excel file that should be loaded.
      */
-    public ExcelFile(String filePath, int sheetNr) {
+    public XlsxExcelFile(String filePath, int sheetNr) {
         this.filePath = filePath;
 
         FileInputStream file = null;
@@ -49,7 +49,7 @@ public class ExcelFile {
      * @param filePath path to target file. Please stick to
      *  the OS specific path naming conventions.
      */
-    public ExcelFile(String filePath) {
+    public XlsxExcelFile(String filePath) {
         this(filePath, 0);
     }
 
@@ -63,6 +63,7 @@ public class ExcelFile {
      * @param rowIdx cell row index
      * @param columnIdx cell column index
      */
+    @Override
     public void writeCell(String content, int rowIdx, int columnIdx) {
         Row row = null;
         Cell cell = null;
@@ -88,6 +89,7 @@ public class ExcelFile {
      * Please close the file your are about to write,
      * before actually invoking the writer function.
      */
+    @Override
     public void save() {
         try {
             FileOutputStream stream = new FileOutputStream(filePath);
@@ -116,6 +118,7 @@ public class ExcelFile {
      * @param startColIdx cell column index we want to start our search.
      * @return free column index.
      */
+    @Override
     public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
         int colIdx = startColIdx;
         XSSFCell content;
@@ -140,6 +143,7 @@ public class ExcelFile {
      * @param columnIdx column index in current excel sheet.
      * @return string representation of target cell.
      */
+    @Override
     public String getCellValue(int rowIdx, int columnIdx) {
         String cellContent = "";
         XSSFRow row = getRow(rowIdx);

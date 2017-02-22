@@ -5,11 +5,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ExcelFileTest {
+public class XlsxExcelFileTest {
 
     @Test
     public void testCanReadExistingFile() {
-        ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
         assertTrue(excel != null);
     }
 
@@ -25,7 +25,7 @@ public class ExcelFileTest {
 
     @Test
     public void testCanReadExcelContent() {
-        ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
         assertEquals("1", excel.getCellValue(0, 0));
         assertEquals("2", excel.getCellValue(0, 1));
         assertEquals("3", excel.getCellValue(0, 2));
@@ -39,8 +39,8 @@ public class ExcelFileTest {
 
     @Test
     public void testSimpleConstructurUsesFirstExcelSheet() {
-        ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
-        ExcelFile excelZero = new ExcelFile(TestHelper.getReadOnlyFilePath());
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
+        XlsxExcelFile excelZero = new XlsxExcelFile(TestHelper.getReadOnlyFilePath());
         assertEquals(excelZero.getCellValue(0, 0), excel.getCellValue(0, 0));
         assertEquals(excelZero.getCellValue(0, 1), excel.getCellValue(0, 1));
         assertEquals(excelZero.getCellValue(0, 2), excel.getCellValue(0, 2));
@@ -54,7 +54,7 @@ public class ExcelFileTest {
 
     @Test
     public void testAccessingInexistentCellYieldsNull() {
-        ExcelFile excel = new ExcelFile(TestHelper.getReadOnlyFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
         assertEquals(null, excel.getCellValue(1337, 1337));
         assertEquals(null, excel.getCellValue(0, 4));
         assertEquals(null, excel.getCellValue(4, 0));
@@ -62,7 +62,7 @@ public class ExcelFileTest {
 
     @Test
     public void testCanWriteCell() {
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
         excel.writeCell("foobar1337", 0, 0);
         assertEquals("foobar1337", excel.getCellValue(0, 0));
@@ -70,26 +70,26 @@ public class ExcelFileTest {
 
     @Test
     public void testWrieDoesNotOverwriteFile() {
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
         excel.writeCell("foobar1337", 0, 0);
-        excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
     }
 
     @Test
     public void testSave() {
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         excel.writeCell("foobar1337", 0, 0);
         assertEquals("foobar1337", excel.getCellValue(0, 0));
         excel.save();
-        excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals("foobar1337", excel.getCellValue(0, 0));
     }
 
     @Test
     public void testFindEmptyCellColumnAtFixedRowWithoutAddition() {
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(0, excel.findEmptyCellColumnAtFixedRow(0, 0));
         assertEquals(1, excel.findEmptyCellColumnAtFixedRow(0, 1));
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 2));
@@ -99,7 +99,7 @@ public class ExcelFileTest {
 
     @Test
     public void testFindEmptyCellColumnAtFixedRowWithAdditions() {
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(0, excel.findEmptyCellColumnAtFixedRow(0, 0));
         assertEquals(1, excel.findEmptyCellColumnAtFixedRow(0, 1));
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 2));

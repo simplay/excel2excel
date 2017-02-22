@@ -27,12 +27,12 @@ public class ConsolidatorTest {
         };
         Properties.initialize(args);
 
-        ExcelFile src = new ExcelFile(Properties.getFromExcelFilePath(), 0);
-        ExcelFile dst = new ExcelFile(Properties.getToExcelFilePath(), 0);
+        XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath(), 0);
         new Consolidator(Properties.getMappingFilePath(), src, dst);
         dst.save();
 
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(src.getCellValue(0,0), excel.getCellValue(0, 0));
         assertEquals(src.getCellValue(0,1), excel.getCellValue(0, 1));
         assertEquals(src.getCellValue(0,2), excel.getCellValue(0, 2));
@@ -55,12 +55,12 @@ public class ConsolidatorTest {
         };
         Properties.initialize(args);
 
-        ExcelFile src = new ExcelFile(Properties.getFromExcelFilePath(), 0);
-        ExcelFile dst = new ExcelFile(Properties.getToExcelFilePath(), 0);
+        XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath(), 0);
         new Consolidator("src/test/data/mappingsWithConstant.txt", src, dst);
         dst.save();
 
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals("foobar1", excel.getCellValue(0, 0));
         assertEquals("foobar2", excel.getCellValue(0, 1));
         assertEquals("foobar3", excel.getCellValue(0, 2));
@@ -86,12 +86,12 @@ public class ConsolidatorTest {
                 "src/test/data/scale_values.txt"
         };
         Properties.initialize(args);
-        ExcelFile src = new ExcelFile(Properties.getFromExcelFilePath());
-        ExcelFile dst = new ExcelFile(Properties.getToExcelFilePath());
+        XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath());
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath());
         new Consolidator(Properties.getMappingFilePath(), src, dst);
         dst.save();
 
-        ExcelFile excel = new ExcelFile(TestHelper.getWritableFilePath(), 0);
+        XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals("1", excel.getCellValue(0, 0));
         assertEquals("2", excel.getCellValue(0, 1));
         assertEquals("3", excel.getCellValue(0, 2));

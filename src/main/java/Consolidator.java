@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class Consolidator extends FileReader{
     private final ArrayList<CellMapping> cellMappings = new ArrayList<CellMapping>();
-    private ExcelFile inExcel;
-    private ExcelFile outExcel;
+    private Excel inExcel;
+    private Excel outExcel;
 
     /**
      *
@@ -16,7 +16,7 @@ public class Consolidator extends FileReader{
      * @param inExcel
      * @param outExcel
      */
-    public Consolidator(String mappingFilePath, ExcelFile inExcel, ExcelFile outExcel) {
+    public Consolidator(String mappingFilePath, Excel inExcel, Excel outExcel) {
         this.inExcel = inExcel;
         this.outExcel = outExcel;
         readFile(mappingFilePath);
