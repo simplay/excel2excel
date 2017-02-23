@@ -48,6 +48,10 @@ public class Properties extends FileReader {
         Logger.println("Logger is muted: " + muteLooger);
     }
 
+    public static boolean hasBaseExcelPaths() {
+        return getInstance().getUseBasePaths().equals("1");
+    }
+
     /**
      * Get the singleton
      *

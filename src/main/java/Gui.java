@@ -44,7 +44,13 @@ public class Gui extends Frame {
         copyFromButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
-                fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                if (Properties.hasBaseExcelPaths()) {
+                    fileDialog.setDirectory(Properties.getInstance().getBaseFromLookupPath());
+                }
+
+                try {
+                    fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                } catch (Exception exception) {}
                 useGuiInput = true;
             }
         });
@@ -53,20 +59,26 @@ public class Gui extends Frame {
         copyToButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
-                toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                if (Properties.hasBaseExcelPaths()) {
+                    fileDialog.setDirectory(Properties.getInstance().getBaseToLookupPath());
+                }
+
+                try {
+                    toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                } catch (Exception exception) {}
                 useGuiInput = true;
             }
         });
 
         copyButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                Properties.clear();
-
-                // TODO set mapping and translation file as well
                 String[] args = {
                         fromExcelPath,
-                        toExcelPath
+                        toExcelPath,
+                        Properties.getMappingFilePath(),
+                        Properties.getScaleValuesFilePath(),
                 };
+                Properties.clear();
 
                 if (userInput.length > 0 && !useGuiInput) {
                     Logger.println("Program was invoked with user specified runtime arguments.");
