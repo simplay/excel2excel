@@ -50,6 +50,7 @@ public class Gui extends Frame {
 
                 try {
                     fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    fromExcelPath = Properties.buildUTF8String(fromExcelPath);
                 } catch (Exception exception) {}
                 useGuiInput = true;
             }
@@ -65,6 +66,7 @@ public class Gui extends Frame {
 
                 try {
                     toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    toExcelPath = Properties.buildUTF8String(toExcelPath);
                 } catch (Exception exception) {}
                 useGuiInput = true;
             }

@@ -1,5 +1,8 @@
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import static java.nio.charset.StandardCharsets.*;
 
 /**
  * Singleton carrying all project relevant properties
@@ -101,7 +104,12 @@ public class Properties extends FileReader {
     }
 
     public String getPathAt(int idx) {
-        return Paths.get(userParameters[idx]).toString();
+        return Paths.get(Properties.buildUTF8String(userParameters[idx])).toString();
+    }
+
+    public static String buildUTF8String(String input) {
+        byte byteEncoding[] = input.getBytes(Charset.defaultCharset());
+        return new String(byteEncoding, UTF_8);
     }
 
     public boolean hasContentAt(int idx) {
@@ -129,11 +137,11 @@ public class Properties extends FileReader {
     }
 
     public String getBaseFromLookupPath() {
-        return properties.get("base_from_lookup_path");
+        return Properties.buildUTF8String(properties.get("base_from_lookup_path"));
     }
 
     public String getBaseToLookupPath() {
-        return properties.get("base_to_lookup_path");
+        return Properties.buildUTF8String(properties.get("base_to_lookup_path"));
     }
 
     public boolean isRunningLogger() {
