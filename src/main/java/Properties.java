@@ -1,6 +1,5 @@
-import sun.rmi.runtime.Log;
-
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 /**
  * Singleton carrying all project relevant properties
@@ -14,9 +13,15 @@ import java.nio.file.Paths;
  *
  * Is properly initialized by calling #initialize
  */
-public class Properties {
+public class Properties extends FileReader {
+
+    // Elements are whitespace separated
+    public static String WHITESPACE_SEPARATOR = " ";
+
     private static Properties instance;
     private String[] userParameters;
+
+    private final HashMap<String, String> properties = new HashMap<String, String>();
 
     public static Properties getInstance(String[] userParameters) {
         if (instance == null) {
@@ -30,6 +35,17 @@ public class Properties {
      */
     public static void clear() {
         instance = null;
+    }
+
+    public static boolean runNormalMode() {
+        if (!getInstance().hasLoadedProperties()) return true;
+        return getInstance().getDebugMode().equals("0");
+    }
+
+    public static void initializeLogger() {
+        boolean muteLooger = !getInstance().isRunningLogger();
+        Logger.getInstance(muteLooger);
+        Logger.println("Logger is muted: " + muteLooger);
     }
 
     /**
@@ -47,6 +63,7 @@ public class Properties {
 
     public Properties(String[] userParameters) {
         this.userParameters = userParameters;
+        readFile(Paths.get("data", "config.txt").toString());
     }
 
     public static String getMappingFilePath() {
@@ -89,5 +106,42 @@ public class Properties {
         Logger.println(" + TO PATH: " + getToExcelFilePath());
         Logger.println(" + MAPPING PATH: " + getMappingFilePath());
         Logger.println(" + SCALE PATH: " + getScaleValuesFilePath());
+    }
+
+    public String getDebugMode() {
+        return properties.get("debug_mode");
+    }
+
+    public String getUseBasePaths() {
+        return properties.get("use_base_paths");
+    }
+
+    public String getBaseFromLookupPath() {
+        return properties.get("base_from_lookup_path");
+    }
+
+    public String getBaseToLookupPath() {
+        return properties.get("base_to_lookup_path");
+    }
+
+    public boolean isRunningLogger() {
+        if (!hasLoadedProperties()) return true;
+        return properties.get("use_logger").equals("1");
+    }
+
+    public boolean hasLoadedProperties() {
+        return !properties.isEmpty();
+    }
+
+    @Override
+    protected void processLine(String line) {
+        String[] items = line.split(WHITESPACE_SEPARATOR);
+
+        // replace `:`
+        String key = items[0].replace(":", "");
+
+        // replace escaped text
+        String value = items[1].replace("\"", "");
+        properties.put(key, value);
     }
 }

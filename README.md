@@ -28,6 +28,7 @@ the `logs` directory is used to store log files, which are generated whenever th
     ./data/
         ./data/mappings.txt
         ./data/scale_values.txt
+        ./data/config.txt
     ./logs/
     ./excel2excel.jar
     
@@ -35,6 +36,7 @@ the `logs` directory is used to store log files, which are generated whenever th
 
 The definition of the `mappings.txt` file can be found below in the section _Define a Cell Mapping File_.
 Moreover, the definition of the `scale_values.txt` file can be found below in the section _Scale Values Format_.
+A config file `./data/config.txt` can optionally be specified. Further information can be found in section _Define the Config File_.
 
 ## Run the Jar
 
@@ -49,6 +51,44 @@ The program can take up to four arguments:
 + The 3rd argument is the path to a custom cellMapping file and is optional.
 + The 4th argument is the path to a custom scale_values file and is optional.
 
+## Define the Config File
+
+The config file is supposed to be named `config.txt` and should be located at `./data/`.
+An example config file can be fund at `./data/config.example.txt`.
+
+A config entry has the following format: `<CONFIG_NAME>: <VALUE>`.
+The `<CONFIG_NAME>` is a string which is used to identify the config entry, the `<VALUE>` is also a string. 
+Texts are supposed to be enclosed by quotes `"`. Further information about the format can be read below.
+
+### Legend
+
+The following legend describes a list of all expected `<CONFIG_NAME>` entries and their values.
+
++ `debug_mod`: Is either `0` (run debug mode) or `1` (run normal mode). Running the debug mode will basically print the content of the input excel file. Running the normal mode will start the GUI application as expected.
++ `use logger`: In case this option is set to `1`, then logger statements are streamed to the terminal. Otherwise it is muted.
++ `base_from_lookup_path`: Starting directory displayed when running the gui and searching for a FROM excel file. Paths are enclosed by quotes (to handle white spaces in paths)
++ `base_to_lookup_path`: Starting directory displayed when running the gui and searching for a TO excel file. Paths are enclosed by quotes (to handle white spaces in paths)
+
+### Example
+
+In the following an eample that:
+
++ Does not run the program in the debug mode
++ Does not print logging statements in the terminal
++ Uses the following base paths:
+ + FROM base path: `foobar/`
+ + TO base path: `barbaz/`
+
+```
+
+debug_mode: 0
+use_logger: 0
+use_base_paths: 1
+base_from_lookup_path: "foobar/"
+base_to_lookup_path: "barbaz/"
+
+```
+
 ## Define a Cell Mapping File
 
 The cellMapping is defined in a text file called `mappings.txt` which is supposed to be located
@@ -62,6 +102,9 @@ ax ay bx by rep
 ax ay bx by rep mappingId
 bx by rep default
 ```
+
+Please notice that the first line defines the FROM and TO sheet indices.
+The leading string `m` is required and thus must not be omitted.
 
 ### Legend
 

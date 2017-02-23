@@ -17,7 +17,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void tesInitialize() {
+    public void testInitialize() {
         String[] args = {
                 "src_path/src.xlsx",
                 "dst_path/dst.xlsx",
@@ -29,5 +29,10 @@ public class PropertiesTest {
         assertEquals(args[1], Properties.getToExcelFilePath());
         assertEquals(args[2], Properties.getMappingFilePath());
         assertEquals(args[3], Properties.getScaleValuesFilePath());
+    }
+
+    @Test
+    public void testWhiteSpaceSeparatorValueIsWhiteSpace() {
+        assertEquals(" ", Properties.WHITESPACE_SEPARATOR);
     }
 }

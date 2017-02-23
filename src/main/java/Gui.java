@@ -75,6 +75,9 @@ public class Gui extends Frame {
                 }
 
                 Properties.initialize(args);
+                // TODO export this logic to initialize
+                Properties.initializeLogger();
+
                 try {
                     Properties.reportPaths();
                     Logger.println("Reading excel files...");
@@ -90,7 +93,6 @@ public class Gui extends Frame {
                     toExcel.save();
                     Logger.println(" => TO file saved.");
                     Logger.println("Excel2Excel successfully finished.");
-                    Logger.writeLog();
                 } catch (Exception e) {
                     Logger.printError(e.getMessage());
                 }
@@ -108,6 +110,7 @@ public class Gui extends Frame {
         public void windowClosing(WindowEvent e) {
             e.getWindow().dispose();
             System.exit(0);
+            Logger.writeLog();
         }
     }
 }

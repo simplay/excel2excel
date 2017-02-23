@@ -9,9 +9,6 @@ public class Translator extends FileReader{
     // singleton instance
     private static Translator instance;
 
-    // Elements are whitespace separated
-    private final String DELIMITER = " ";
-
     // Collection of read scale instances
     private final ArrayList<Scale> scales = new ArrayList<Scale>() ;
 
@@ -64,7 +61,7 @@ public class Translator extends FileReader{
      */
     @Override
     protected void processLine(String line) {
-        String[] row = line.split(DELIMITER);
+        String[] row = line.split(Properties.WHITESPACE_SEPARATOR);
         int itemCount = row.length / 2;
         Scale scale = new Scale();
         for (int k = 0; k < itemCount; k++) {

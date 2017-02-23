@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * two excel files and performs the actual mapping between
  * the files (from file A to file B).
  */
-public class Consolidator extends FileReader{
+public class Consolidator extends FileReader {
     private final ArrayList<CellMapping> cellMappings = new ArrayList<CellMapping>();
     private Excel inExcel;
     private Excel outExcel;
@@ -26,7 +26,29 @@ public class Consolidator extends FileReader{
         this.inExcel = inExcel;
         this.outExcel = outExcel;
         readFile(mappingFilePath);
-        copyFromCellsToToCells();
+
+        if (Properties.runNormalMode()) {
+            copyFromCellsToToCells();
+        } else {
+            Logger.println("Running in debug mode");
+            runDebugMode();
+        }
+    }
+
+    private void runDebugMode() {
+        Logger.println("FROM cells with values:");
+        for (CellMapping cellMapping : cellMappings) {
+            String fromValue = cellMapping.getDefaultValue();
+            if (!cellMapping.hasDefaultValue()) {
+                fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
+                if (cellMapping.hasTranslation()) {
+                    fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
+                }
+            }
+            String fromCell = "(" + cellMapping.getFromRowIndex() + "," + cellMapping.getFromColumnIndex() + ")";
+            String toCell = "(" + cellMapping.getToRowIndex() + "," + cellMapping.getToColumnIndex() + ")";
+            Logger.println(" + " + fromValue + ": " + fromCell + " -> " + toCell);
+        }
     }
 
     /**
@@ -68,7 +90,7 @@ public class Consolidator extends FileReader{
 
     @Override
     protected void processLine(String line) {
-        String[] row = line.split(" ");
+        String[] row = line.split(Properties.WHITESPACE_SEPARATOR);
 
         if (row[0].equals("m")) {
             System.out.println("foobar");
