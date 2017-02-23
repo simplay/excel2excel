@@ -1,5 +1,7 @@
 public abstract class Excel {
 
+    protected int sheetIndex;
+
     /**
      * Save the cells the loaded / updated excel file.
      *
@@ -41,4 +43,11 @@ public abstract class Excel {
      * @param columnIdx cell column index
      */
     public abstract void writeCell(String content, int rowIdx, int columnIdx);
+
+    public void setLookupSheetIndex(int sheetIndex) {
+        this.sheetIndex = sheetIndex;
+        setSheetAt(sheetIndex);
+    }
+
+    protected abstract void setSheetAt(int sheetIndex);
 }

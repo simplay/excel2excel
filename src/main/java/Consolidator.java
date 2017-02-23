@@ -10,6 +10,12 @@ public class Consolidator extends FileReader{
     private Excel inExcel;
     private Excel outExcel;
 
+    // lookup indices extracted from the `mappings` file.
+    // etermines which excel sheet should be used in the FROM and TO excel file
+    // for applying the mapping between the excel cells.
+    private int fromSheetIndex;
+    private int toSheetIndex;
+
     /**
      *
      * @param mappingFilePath a text file located at data/
@@ -20,13 +26,22 @@ public class Consolidator extends FileReader{
         this.inExcel = inExcel;
         this.outExcel = outExcel;
         readFile(mappingFilePath);
-        mergeExcelFiles();
+        copyFromCellsToToCells();
     }
 
     /**
      * Takes ever FROM cell and writes it to the corresponding location in the TO excel file.
      */
-    private void mergeExcelFiles() {
+    private void copyFromCellsToToCells() {
+
+        // set sheet lookup index
+        // TODO: refactor this: Set index when creating the excel instances.
+        //  To do so, we have to change the control-flow of this class:
+        //  1. constructor should only load the mapping file and extract mapping information.
+        //  2. run the copy process by performing a method call.
+        inExcel.setLookupSheetIndex(fromSheetIndex);
+        outExcel.setLookupSheetIndex(toSheetIndex);
+
         for (CellMapping cellMapping : cellMappings) {
             String fromValue = cellMapping.getDefaultValue();
             if (!cellMapping.hasDefaultValue()) {
@@ -55,26 +70,33 @@ public class Consolidator extends FileReader{
     protected void processLine(String line) {
         String[] row = line.split(" ");
 
-        // there is a default value specified
-        if (!lastRowItemIsNumeric(row)) {
-            int toRowIdx = Integer.parseInt(row[0]);
-            int toColIdx = Integer.parseInt(row[1]);
-            boolean usesOffset = (row[row.length - 2].equals("1"));
-            String defaultValue = row[row.length - 1];
-            defaultValue = defaultValue.replace("\"", "");
-            cellMappings.add(new CellMapping(toRowIdx, toColIdx, usesOffset, defaultValue));
-            return;
-        }
-
-        int[] items = parseToIntegerArray(row);
-        if (items.length > 5) {
-            boolean usesOffset = (items[4] == 1);
-            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
-        } else if (items.length > 4) {
-            boolean usesOffset = (items[4] == 1);
-            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset));
+        if (row[0].equals("m")) {
+            System.out.println("foobar");
+            fromSheetIndex = Integer.parseInt(row[1]);
+            toSheetIndex = Integer.parseInt(row[2]);
+            Logger.println("Using from sheet Index" + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
         } else {
-            cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3]));
+            // there is a default value specified
+            if (!lastRowItemIsNumeric(row)) {
+                int toRowIdx = Integer.parseInt(row[0]);
+                int toColIdx = Integer.parseInt(row[1]);
+                boolean usesOffset = (row[row.length - 2].equals("1"));
+                String defaultValue = row[row.length - 1];
+                defaultValue = defaultValue.replace("\"", "");
+                cellMappings.add(new CellMapping(toRowIdx, toColIdx, usesOffset, defaultValue));
+                return;
+            }
+
+            int[] items = parseToIntegerArray(row);
+            if (items.length > 5) {
+                boolean usesOffset = (items[4] == 1);
+                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
+            } else if (items.length > 4) {
+                boolean usesOffset = (items[4] == 1);
+                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset));
+            } else {
+                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3]));
+            }
         }
     }
 }

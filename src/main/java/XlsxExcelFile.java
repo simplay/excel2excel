@@ -38,9 +38,7 @@ public class XlsxExcelFile extends Excel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Return first sheet from the XLSX workbook
-        sheet = workbook.getSheetAt(sheetNr);
+        setSheetAt(sheetNr);
     }
 
     /**
@@ -81,6 +79,11 @@ public class XlsxExcelFile extends Excel {
         }
 
         cell.setCellValue(content);
+    }
+
+    @Override
+    protected void setSheetAt(int sheetIndex) {
+        sheet = workbook.getSheetAt(sheetIndex);
     }
 
     /**
