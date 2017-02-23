@@ -16,11 +16,22 @@ public class XlsxExcelFileTest {
     @Before
     public void initialize() {
         TestHelper.prepare();
+        Properties.clear();
+
+        String[] args = {
+                "",
+                "",
+                "",
+                "",
+                "src/test/data/config.txt"
+        };
+        Properties.initialize(args);
     }
 
     @After
     public void cleanup() {
         TestHelper.cleanup();
+        Properties.clear();
     }
 
     @Test

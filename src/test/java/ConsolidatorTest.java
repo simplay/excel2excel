@@ -23,8 +23,11 @@ public class ConsolidatorTest {
         String[] args = {
                 TestHelper.getReadOnlyFilePath(),
                 TestHelper.getWritableFilePath(),
-                TestHelper.getMappingFilePath()
+                TestHelper.getMappingFilePath(),
+                "",
+                "src/test/data/config.txt"
         };
+        Properties.clear();
         Properties.initialize(args);
 
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
@@ -51,8 +54,11 @@ public class ConsolidatorTest {
         String[] args = {
                 TestHelper.getReadOnlyFilePath(),
                 TestHelper.getWritableFilePath(),
-                TestHelper.getMappingFilePath()
+                TestHelper.getMappingFilePath(),
+                "",
+                "src/test/data/config.txt"
         };
+        Properties.clear();
         Properties.initialize(args);
 
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
@@ -83,8 +89,10 @@ public class ConsolidatorTest {
                 "src/test/data/scale_values.xlsx",
                 TestHelper.getWritableFilePath(),
                 "src/test/data/mappingsWithScale.txt",
-                "src/test/data/scale_values.txt"
+                "src/test/data/scale_values.txt",
+                "src/test/data/config.txt"
         };
+        Properties.clear();
         Properties.initialize(args);
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath());
         XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath());

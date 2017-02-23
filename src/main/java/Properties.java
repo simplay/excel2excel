@@ -10,6 +10,7 @@ import java.util.HashMap;
  * 2nd arguments is the relative file name / path to the TO excel file (required)
  * 3rd arguments is the relative file name / path to the cell mapping file  (optional)
  * 4th arguments is the relative file name / path to the scale file (optional)
+ * 5th arguments is the relative file name / path to the config file (optional)
  *
  * Is properly initialized by calling #initialize
  */
@@ -20,8 +21,7 @@ public class Properties extends FileReader {
 
     private static Properties instance;
     private String[] userParameters;
-
-    private final HashMap<String, String> properties = new HashMap<String, String>();
+    private HashMap<String, String> properties;
 
     public static Properties getInstance(String[] userParameters) {
         if (instance == null) {
@@ -63,7 +63,15 @@ public class Properties extends FileReader {
 
     public Properties(String[] userParameters) {
         this.userParameters = userParameters;
-        readFile(Paths.get("data", "config.txt").toString());
+        this.properties = new HashMap<String, String>();
+        readFile(getConfigPath());
+    }
+
+    private String getConfigPath() {
+        if (hasContentAt(4)) {
+            return getPathAt(4);
+        }
+        return Paths.get("data", "config.txt").toString();
     }
 
     public static String getMappingFilePath() {

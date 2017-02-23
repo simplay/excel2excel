@@ -1,0 +1,5 @@
+debug_mode: 0
+use_logger: 0
+use_base_paths: 0
+base_from_lookup_path: ""
+base_to_lookup_path: ""

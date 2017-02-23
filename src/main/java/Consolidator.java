@@ -93,7 +93,6 @@ public class Consolidator extends FileReader {
         String[] row = line.split(Properties.WHITESPACE_SEPARATOR);
 
         if (row[0].equals("m")) {
-            System.out.println("foobar");
             fromSheetIndex = Integer.parseInt(row[1]);
             toSheetIndex = Integer.parseInt(row[2]);
             Logger.println("Using from sheet Index" + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
