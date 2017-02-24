@@ -15,9 +15,9 @@ import java.io.*;
  * This implies one has to apply manually add an offset of one.
  */
 public class XlsxExcelFile extends Excel {
-    private XSSFSheet sheet;
-    private XSSFWorkbook workbook;
-    private String filePath;
+    protected XSSFSheet sheet;
+    protected XSSFWorkbook workbook;
+    protected String filePath;
 
     /**
      * Load a excel file by its path and sheet nr.
@@ -28,17 +28,21 @@ public class XlsxExcelFile extends Excel {
      */
     public XlsxExcelFile(String filePath, int sheetNr) {
         this.filePath = filePath;
+        workbook = loadWorkbook();
+        setSheetAt(sheetNr);
+    }
 
-        FileInputStream file = null;
+    protected XSSFWorkbook loadWorkbook() {
+        XSSFWorkbook workbook = null;
         try {
-            file = new FileInputStream(new File(filePath));
+            FileInputStream file = new FileInputStream(new File(filePath));
             workbook = new XSSFWorkbook(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setSheetAt(sheetNr);
+        return workbook;
     }
 
     /**

@@ -112,6 +112,23 @@ public class Properties extends FileReader {
         return new String(byteEncoding, UTF_8);
     }
 
+    public static String normalizedPath(String windowsPath) {
+        String pathToken = "\\\\";
+        String joinToken = "\\";
+        if (windowsPath.contains("/")) {
+            pathToken = "/";
+            joinToken = "/";
+        }
+        String[] pathElements = windowsPath.split(pathToken);
+
+        String normalizedPath = "";
+        for (int k = 0; k < pathElements.length - 1; k++) {
+            normalizedPath += buildUTF8String(pathElements[k]) + joinToken;
+        }
+        normalizedPath += buildUTF8String(pathElements[pathElements.length - 1]);
+        return normalizedPath;
+    }
+
     public boolean hasContentAt(int idx) {
         if (userParameters == null ) return false;
         return idx <= userParameters.length - 1;

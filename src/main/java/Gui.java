@@ -45,12 +45,12 @@ public class Gui extends Frame {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
                 if (Properties.hasBaseExcelPaths()) {
-                    fileDialog.setDirectory(Properties.getInstance().getBaseFromLookupPath());
+                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseFromLookupPath()));
                 }
 
                 try {
                     fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
-                    fromExcelPath = Properties.buildUTF8String(fromExcelPath);
+                    fromExcelPath = Properties.normalizedPath(fromExcelPath);
                 } catch (Exception exception) {}
                 useGuiInput = true;
             }
@@ -61,12 +61,12 @@ public class Gui extends Frame {
             public void actionPerformed(ActionEvent e) {
                 fileDialog.setVisible(true);
                 if (Properties.hasBaseExcelPaths()) {
-                    fileDialog.setDirectory(Properties.getInstance().getBaseToLookupPath());
+                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
                 }
 
                 try {
                     toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
-                    toExcelPath = Properties.buildUTF8String(toExcelPath);
+                    toExcelPath = Properties.normalizedPath(toExcelPath);
                 } catch (Exception exception) {}
                 useGuiInput = true;
             }
