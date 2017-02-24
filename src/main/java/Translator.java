@@ -47,7 +47,46 @@ public class Translator extends FileReader{
      */
     public static String lookup(int lookupRow, String toBeTranslated) {
         Scale scale = getInstance().getScales().get(lookupRow);
-        return Integer.toString(scale.getValueByLabel(toBeTranslated));
+
+        // normalize to be translated string
+        String normalizedString = normalizedInputTranslation(toBeTranslated);
+        return Integer.toString(scale.getValueByLabel(normalizedString));
+    }
+
+    /**
+     * Normalizes a composite scale. Composite scales are separated by a `/` symbol.
+     * The input can exhibit an arbitrary number of whitespace separation, i.e.
+     * this method transforms
+     *  (\s)(?)(\s)*((/)(\s)*(?)(\s))+
+     * to
+     * (?)((/)(?))+
+     *
+     * @param toBeTranslated lookup string
+     * @return normalized lookup string
+     */
+    public static String normalizedInputTranslation(String toBeTranslated) {
+        String normalizedString = toBeTranslated;
+        normalizedString = normalizedString.replace(" ", "");
+
+        // in case it we query for a composite symbolic value
+        // E.g. "V / A" instead of just "V" or "A"
+        // accept all inputs (V)(\s)*(/)(\s)*(A)
+        if (normalizedString.contains("/")) {
+            String[] tokens = normalizedString.split("/");
+            int counter = 0;
+            for (String token : tokens) {
+                tokens[counter] = token.replace(" ", "");
+                counter++;
+            }
+
+            String tmp = "";
+            for (int k = 0; k < tokens.length - 1; k++) {
+                tmp += tokens[k] + "/";
+            }
+            tmp += tokens[tokens.length - 1];
+            normalizedString = tmp;
+        }
+        return normalizedString;
     }
 
     /**

@@ -156,7 +156,11 @@ Sm1 Sm2 ... Smn Nm1 Nm2 ... Nmn
 of `2*k` number of elements (k is the number of symbols).
  
 Items (both, symbolic and numerical values) in the file are white space separated.
-Each line defines a specific translation, called scale. 
+Each line defines a specific translation, called scale.
+
+In case a scale can be A, B or A and B values, the combination A and B is written as `A/B` in the scale file.
+Please notice that this `A/B` must not exhibit any whitespace separation in the scale file. So, this means that
+`A/B` is valid whereas `A / B`, `A/ B`, ` A  /B  ` and so forth are wrong. That does not affect the excel file.
 
 ### Example
 
@@ -166,6 +170,7 @@ In the following we define three different scales, _sexes_, _foobar_, and _even/
 m f o 1 2 3
 foo bar -1 1
 even odd 10 20
+A B A/B 1 2 3
 
 ```
 

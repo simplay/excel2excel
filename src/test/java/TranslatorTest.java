@@ -42,7 +42,7 @@ public class TranslatorTest {
     }
 
     @Test
-    public void tesGetScalas() {
+    public void testGetScales() {
         ArrayList<Scale> scales = Translator.getInstance().getScales();
         String[] gtScalaSymbols = {"R", "G", "B", "X", "Y", "Z", "U", "V", "W"};
         int[] gtScalaValues = {1, 2, 3, 10, 11, 12, 23, 34, 45};
@@ -57,6 +57,26 @@ public class TranslatorTest {
             assertEquals(gtScalaValues[idx + 2], value3);
             idx += 3;
         }
+    }
+
+    @Test
+    public void testTokenNormalization2Labels() {
+        assertEquals("A/B", Translator.normalizedInputTranslation("A/B"));
+        assertEquals("A/B", Translator.normalizedInputTranslation("A / B"));
+        assertEquals("A/B", Translator.normalizedInputTranslation("A/ B"));
+        assertEquals("A/B", Translator.normalizedInputTranslation("A /B"));
+        assertEquals("A/B", Translator.normalizedInputTranslation(" A / B "));
+        assertEquals("A/B", Translator.normalizedInputTranslation(" A/ B "));
+        assertEquals("A/B", Translator.normalizedInputTranslation(" A /B "));
+        assertEquals("A/B", Translator.normalizedInputTranslation(" A/B "));
+        assertEquals("A/B", Translator.normalizedInputTranslation(" A   /  B  "));
+    }
+
+    @Test
+    public void testTokenNormalization3Labels() {
+        assertEquals("A/B/C", Translator.normalizedInputTranslation("A/B/C"));
+        assertEquals("A/B/C", Translator.normalizedInputTranslation("A / B / C"));
+        assertEquals("A/B/C", Translator.normalizedInputTranslation("A/B  /C  "));
     }
 
 }
