@@ -1,5 +1,3 @@
-import java.nio.charset.Charset;
-
 public class ExcelBuilder {
 
     /**
@@ -14,7 +12,6 @@ public class ExcelBuilder {
             return new XlsExcelFile(filePath);
         } else if (filePath.matches("(.)+(\\.xlsm)$")) {
             Logger.println("Building a xlsm excel file for `" + filePath + "`.");
-            // TODO xlsm
             return new XlsmExcelFile(filePath);
         } else {
             Logger.println("Building a xlsx excel file for `" + filePath + "`.");

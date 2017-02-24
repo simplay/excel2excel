@@ -11,7 +11,7 @@ public class XlsmExcelFile extends XlsxExcelFile {
     }
 
     public XlsmExcelFile(String filePath) {
-        super(filePath, 0);
+        this(filePath, 0);
     }
 
     @Override

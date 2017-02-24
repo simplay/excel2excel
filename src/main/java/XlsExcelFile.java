@@ -83,7 +83,7 @@ public class XlsExcelFile extends Excel {
 
     @Override
     protected void setSheetAt(int sheetIndex) {
-        sheet = workbook.getSheetAt(sheetIndex);
+        this.sheet = workbook.getSheetAt(sheetIndex);
     }
 
     /**

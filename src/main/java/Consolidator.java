@@ -27,6 +27,13 @@ public class Consolidator extends FileReader {
         this.outExcel = outExcel;
         readFile(mappingFilePath);
 
+        // set sheet lookup index
+        // TODO: refactor this: Set index when creating the excel instances.
+        //  To do so, we have to change the control-flow of this class:
+        //  1. constructor should only load the mapping file and extract mapping information.
+        //  2. run the copy process by performing a method call.
+        updateSheetIndices();
+
         if (Properties.runNormalMode()) {
             copyFromCellsToToCells();
         } else {
@@ -36,6 +43,8 @@ public class Consolidator extends FileReader {
     }
 
     private void runDebugMode() {
+        inExcel.setLookupSheetIndex(fromSheetIndex);
+        outExcel.setLookupSheetIndex(toSheetIndex);
         Logger.println("FROM cells with values:");
         for (CellMapping cellMapping : cellMappings) {
             String fromValue = cellMapping.getDefaultValue();
@@ -52,18 +61,18 @@ public class Consolidator extends FileReader {
     }
 
     /**
+     * Update sheet indices according to given mapping definition.
+     * By default this the sheet index zero is loaded.
+     */
+    private void updateSheetIndices() {
+        inExcel.setLookupSheetIndex(fromSheetIndex);
+        outExcel.setLookupSheetIndex(toSheetIndex);
+    }
+
+    /**
      * Takes ever FROM cell and writes it to the corresponding location in the TO excel file.
      */
     private void copyFromCellsToToCells() {
-
-        // set sheet lookup index
-        // TODO: refactor this: Set index when creating the excel instances.
-        //  To do so, we have to change the control-flow of this class:
-        //  1. constructor should only load the mapping file and extract mapping information.
-        //  2. run the copy process by performing a method call.
-        inExcel.setLookupSheetIndex(fromSheetIndex);
-        outExcel.setLookupSheetIndex(toSheetIndex);
-
         for (CellMapping cellMapping : cellMappings) {
             String fromValue = cellMapping.getDefaultValue();
             if (!cellMapping.hasDefaultValue()) {
@@ -95,7 +104,8 @@ public class Consolidator extends FileReader {
         if (row[0].equals("m")) {
             fromSheetIndex = Integer.parseInt(row[1]);
             toSheetIndex = Integer.parseInt(row[2]);
-            Logger.println("Using from sheet Index" + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
+            Logger.println("Using from sheet Index " + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
+
         } else {
             // there is a default value specified
             if (!lastRowItemIsNumeric(row)) {
