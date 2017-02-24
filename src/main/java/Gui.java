@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 /**
  * A very basic graphical user interface that allows to easily specify
@@ -11,15 +12,15 @@ import java.nio.file.Paths;
  */
 public class Gui extends Frame {
 
+    private Frame self;
     private final int width = 400;
     private final int height = 100;
     private final Panel panel = new Panel();
-    private FileDialog fileDialog;
     private boolean useGuiInput;
-
     private String[] userInput;
     private String fromExcelPath = "";
-    private String toExcelPath = "";
+    private String toExcelPath1 = "";
+    private String toExcelPath2 = "";
 
     /**
      * Build a new GUI to extract and copy the content of certain excel files.
@@ -27,22 +28,25 @@ public class Gui extends Frame {
      * @param userInput optional provided user input
      */
     public Gui(final String[] userInput) {
+        this.self = this;
         this.userInput = userInput;
         useGuiInput = false;
 
         setTitle("Excel2Excel");
         setSize(width, height);
         Button copyFromButton = new Button("From Excel File");
-        Button copyToButton = new Button("To Excel File");
+        Button copyToButton1 = new Button("To Excel File 1");
+        Button copyToButton2 = new Button("To Excel File 2");
         Button copyButton = new Button("Copy");
 
         panel.add(copyFromButton);
-        panel.add(copyToButton);
+        panel.add(copyToButton1);
+        panel.add(copyToButton2);
         panel.add(copyButton);
 
-        fileDialog = new FileDialog(this, "Choose From Excel File");
         copyFromButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
                 fileDialog.setVisible(true);
                 if (Properties.hasBaseExcelPaths()) {
                     fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseFromLookupPath()));
@@ -56,17 +60,33 @@ public class Gui extends Frame {
             }
         });
 
-        fileDialog = new FileDialog(this, "Choose To Excel File");
-        copyToButton.addActionListener(new ActionListener() {
+        copyToButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
                 fileDialog.setVisible(true);
                 if (Properties.hasBaseExcelPaths()) {
                     fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
                 }
 
                 try {
-                    toExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
-                    toExcelPath = Properties.normalizedPath(toExcelPath);
+                    toExcelPath1 = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    toExcelPath1 = Properties.normalizedPath(toExcelPath1);
+                } catch (Exception exception) {}
+                useGuiInput = true;
+            }
+        });
+
+        copyToButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
+                fileDialog.setVisible(true);
+                if (Properties.hasBaseExcelPaths()) {
+                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
+                }
+
+                try {
+                    toExcelPath2 = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    toExcelPath2 = Properties.normalizedPath(toExcelPath2);
                 } catch (Exception exception) {}
                 useGuiInput = true;
             }
@@ -76,7 +96,8 @@ public class Gui extends Frame {
             public void actionPerformed(ActionEvent event) {
                 String[] args = {
                         fromExcelPath,
-                        toExcelPath,
+                        toExcelPath1,
+                        toExcelPath2,
                         Properties.getMappingFilePath(),
                         Properties.getScaleValuesFilePath(),
                 };
@@ -97,16 +118,21 @@ public class Gui extends Frame {
                     Logger.println("Reading excel files...");
 
                     Excel fromExcel = ExcelBuilder.build(Properties.getFromExcelFilePath());
-                    Excel toExcel = ExcelBuilder.build(Properties.getToExcelFilePath());
 
+                    ArrayList<Excel> toExcels = new ArrayList<Excel>();
+                    toExcels.add(ExcelBuilder.build(Properties.getToExcelFilePath1()));
+                    toExcels.add(ExcelBuilder.build(Properties.getToExcelFilePath2()));
                     Logger.println(" => Excel files read.");
-                    Logger.println("Copying content from FROM excel file to TO file...");
-                    new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcel);
-                    Logger.println(" => Content copied.");
-                    Logger.println("Saving TO excel file...");
-                    toExcel.save();
-                    Logger.println(" => TO file saved.");
-                    Logger.println("Excel2Excel successfully finished.");
+
+                    for (int k = 0; k < 2; k++) {
+                        Logger.println("Copying content from FROM excel file to TO file " + k + "...");
+                        new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcels, k);
+                        Logger.println(" => Content copied.");
+                        Logger.println("Saving TO excel file...");
+                        toExcels.get(k).save();
+                        Logger.println(" => TO file saved.");
+                        Logger.println("Excel2Excel successfully finished.");
+                    }
                 } catch (Exception e) {
                     Logger.printError(e.getMessage());
                 }

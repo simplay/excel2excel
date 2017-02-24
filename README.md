@@ -96,7 +96,12 @@ at `./data/`. The file consists of a series of lines, where each line is series 
 Currently, there are four different formats supported.
 
 ```
-m FromSheetIndex ToSheetIndex
+m FromSheetIndex 1stToSheetIndex
+ax ay bx by
+ax ay bx by rep
+ax ay bx by rep mappingId
+bx by rep default
+m FromSheetIndex 2ndToSheetIndex
 ax ay bx by
 ax ay bx by rep
 ax ay bx by rep mappingId
@@ -105,6 +110,7 @@ bx by rep default
 
 Please notice that the first line defines the FROM and TO sheet indices.
 The leading string `m` is required and thus must not be omitted.
+Every line starting by `m` starts a mapping to a new TO excel file. 
 
 ### Legend
 
@@ -121,14 +127,17 @@ The leading string `m` is required and thus must not be omitted.
 
 ### Example
 
-+ Use the 1st sheet in the FROM excel file and the 3rd sheet in the TO excel file.
-+ Cascade the string foobar in the first row in the TO excel file
-+ take the cell in the 2nd row and 2nd column in the FROM file (which is supposed to be a symbolic scale value) and translate it to a numeric value according to the first scale (row 0 in `scale_values.txt`). The translated numeric value is written to cell at the 4th row and 2nd column in the TO excel file. 
++ Use the 1st sheet in the FROM excel file and the 3rd sheet in the 1st TO excel file.
++ Cascade the string foobar in the first row in the 1st TO excel file
++ take the cell in the 2nd row and 2nd column in the FROM file (which is supposed to be a symbolic scale value) and translate it to a numeric value according to the first scale (row 0 in `scale_values.txt`). The translated numeric value is written to cell at the 4th row and 2nd column in the 1st TO excel file. 
++ Copy the cell at (3,1) on sheet 2 in the FROM file to the cell (1,0) on sheet 3 in the 2nd TO excel.
 
 ```
 m 0 2
 0 1 1 "foobar"
 3 1 1 1 1 0
+m 1 2
+3 1 1 1 0
 
 ```
 

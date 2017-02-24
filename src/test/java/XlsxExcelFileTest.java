@@ -23,6 +23,7 @@ public class XlsxExcelFileTest {
                 "",
                 "",
                 "",
+                "",
                 "src/test/data/config.txt"
         };
         Properties.initialize(args);

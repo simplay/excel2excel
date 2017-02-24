@@ -75,22 +75,22 @@ public class Properties extends FileReader {
     }
 
     private String getConfigPath() {
-        if (hasContentAt(4)) {
-            return getPathAt(4);
+        if (hasContentAt(5)) {
+            return getPathAt(5);
         }
         return Paths.get("data", "config.txt").toString();
     }
 
     public static String getMappingFilePath() {
-        if (getInstance().hasContentAt(2)) {
-            return getInstance().getPathAt(2);
+        if (getInstance().hasContentAt(3)) {
+            return getInstance().getPathAt(3);
         }
         return Paths.get("data", "mappings.txt").toString();
     }
 
     public static String getScaleValuesFilePath() {
-        if (getInstance().hasContentAt(3)) {
-            return getInstance().getPathAt(3);
+        if (getInstance().hasContentAt(4)) {
+            return getInstance().getPathAt(4);
         }
         return Paths.get("data", "scale_values.txt").toString();
     }
@@ -99,9 +99,14 @@ public class Properties extends FileReader {
         return getInstance().getPathAt(0);
     }
 
-    public static String getToExcelFilePath() {
+    public static String getToExcelFilePath1() {
         return getInstance().getPathAt(1);
     }
+
+    public static String getToExcelFilePath2() {
+        return getInstance().getPathAt(2);
+    }
+
 
     public String getPathAt(int idx) {
         return Paths.get(Properties.buildUTF8String(userParameters[idx])).toString();
@@ -140,7 +145,8 @@ public class Properties extends FileReader {
     public static void reportPaths() {
         Logger.println("The following paths are used: ");
         Logger.println(" + FROM PATH: " + getFromExcelFilePath());
-        Logger.println(" + TO PATH: " + getToExcelFilePath());
+        Logger.println(" + TO PATH 1: " + getToExcelFilePath1());
+        Logger.println(" + TO PATH 2: " + getToExcelFilePath2());
         Logger.println(" + MAPPING PATH: " + getMappingFilePath());
         Logger.println(" + SCALE PATH: " + getScaleValuesFilePath());
     }

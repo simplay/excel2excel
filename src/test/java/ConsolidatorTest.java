@@ -2,6 +2,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -23,6 +25,7 @@ public class ConsolidatorTest {
         String[] args = {
                 TestHelper.getReadOnlyFilePath(),
                 TestHelper.getWritableFilePath(),
+                TestHelper.getWritableFilePath(),
                 TestHelper.getMappingFilePath(),
                 "",
                 "src/test/data/config.txt"
@@ -31,8 +34,13 @@ public class ConsolidatorTest {
         Properties.initialize(args);
 
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
-        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath(), 0);
-        new Consolidator(Properties.getMappingFilePath(), src, dst);
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath1(), 0);
+
+
+        ArrayList<Excel> excels = new ArrayList<>();
+        excels.add(dst);
+
+        new Consolidator(Properties.getMappingFilePath(), src, excels, 0);
         dst.save();
 
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
@@ -54,6 +62,7 @@ public class ConsolidatorTest {
         String[] args = {
                 TestHelper.getReadOnlyFilePath(),
                 TestHelper.getWritableFilePath(),
+                TestHelper.getWritableFilePath(),
                 TestHelper.getMappingFilePath(),
                 "",
                 "src/test/data/config.txt"
@@ -62,8 +71,12 @@ public class ConsolidatorTest {
         Properties.initialize(args);
 
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath(), 0);
-        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath(), 0);
-        new Consolidator("src/test/data/mappingsWithConstant.txt", src, dst);
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath1(), 0);
+
+        ArrayList<Excel> excels = new ArrayList<>();
+        excels.add(dst);
+
+        new Consolidator("src/test/data/mappingsWithConstant.txt", src, excels, 0);
         dst.save();
 
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
@@ -88,6 +101,7 @@ public class ConsolidatorTest {
         String[] args = {
                 "src/test/data/scale_values.xlsx",
                 TestHelper.getWritableFilePath(),
+                TestHelper.getWritableFilePath(),
                 "src/test/data/mappingsWithScale.txt",
                 "src/test/data/scale_values.txt",
                 "src/test/data/config.txt"
@@ -95,8 +109,12 @@ public class ConsolidatorTest {
         Properties.clear();
         Properties.initialize(args);
         XlsxExcelFile src = new XlsxExcelFile(Properties.getFromExcelFilePath());
-        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath());
-        new Consolidator(Properties.getMappingFilePath(), src, dst);
+        XlsxExcelFile dst = new XlsxExcelFile(Properties.getToExcelFilePath1());
+
+        ArrayList<Excel> excels = new ArrayList<>();
+        excels.add(dst);
+
+        new Consolidator(Properties.getMappingFilePath(), src, excels, 0);
         dst.save();
 
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);

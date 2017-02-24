@@ -21,14 +21,16 @@ public class PropertiesTest {
         String[] args = {
                 "src_path/src.xlsx",
                 "dst_path/dst.xlsx",
+                "dst_path/dst.xlsx",
                 "mapping_path/map.txt",
                 "scala_path/scala.txt"
         };
         Properties.initialize(args);
         assertEquals(args[0], Properties.getFromExcelFilePath());
-        assertEquals(args[1], Properties.getToExcelFilePath());
-        assertEquals(args[2], Properties.getMappingFilePath());
-        assertEquals(args[3], Properties.getScaleValuesFilePath());
+        assertEquals(args[1], Properties.getToExcelFilePath1());
+        assertEquals(args[2], Properties.getToExcelFilePath1());
+        assertEquals(args[3], Properties.getMappingFilePath());
+        assertEquals(args[4], Properties.getScaleValuesFilePath());
     }
 
     @Test

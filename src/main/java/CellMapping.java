@@ -13,6 +13,7 @@
  */
 public class CellMapping {
 
+    private int outExcelFileIdx;
     private int fromRowIdx;
     private int fromColIdx;
     private int toRowIdx;
@@ -30,7 +31,8 @@ public class CellMapping {
      * @param toColIdx cell column in TO the excel file
      * @param usesOffset indicates whether the TO column index is computed dynamically.
      */
-    public CellMapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue, int translationRow) {
+    public CellMapping(int outExcelFileIdx, int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue, int translationRow) {
+        this.outExcelFileIdx = outExcelFileIdx;
         this.fromRowIdx = fromRowIdx;
         this.fromColIdx = fromColIdx;
         this.toRowIdx = toRowIdx;
@@ -49,8 +51,8 @@ public class CellMapping {
      * @param toColIdx
      * @param usesOffset
      */
-    public CellMapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", -1);
+    public CellMapping(int outExcelFileIdx, int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset) {
+        this(outExcelFileIdx, fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", -1);
     }
 
     /**
@@ -63,8 +65,8 @@ public class CellMapping {
      * @param usesOffset
      * @param translationRow
      */
-    public CellMapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, int translationRow) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", translationRow);
+    public CellMapping(int outExcelFileIdx, int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx, boolean usesOffset, int translationRow) {
+        this(outExcelFileIdx, fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, "", translationRow);
     }
 
     /**
@@ -75,8 +77,8 @@ public class CellMapping {
      * @param toRowIdx
      * @param toColIdx
      */
-    public CellMapping(int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
-        this(fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "", -1);
+    public CellMapping(int outExcelFileIdx, int fromRowIdx, int fromColIdx, int toRowIdx, int toColIdx) {
+        this(outExcelFileIdx, fromRowIdx, fromColIdx, toRowIdx, toColIdx, false, "", -1);
     }
 
     /**
@@ -87,8 +89,8 @@ public class CellMapping {
      * @param usesOffset
      * @param defaultValue
      */
-    public CellMapping(int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
-        this(-1, -1, toRowIdx, toColIdx, usesOffset, defaultValue, -1);
+    public CellMapping(int outExcelFileIdx, int toRowIdx, int toColIdx, boolean usesOffset, String defaultValue) {
+        this(outExcelFileIdx, -1, -1, toRowIdx, toColIdx, usesOffset, defaultValue, -1);
     }
 
     public int getFromRowIndex() {
@@ -101,6 +103,10 @@ public class CellMapping {
 
     public int getToRowIndex() {
         return toRowIdx;
+    }
+
+    public int getOutExcelFileIdx() {
+        return outExcelFileIdx;
     }
 
     public int getToColumnIndex() {

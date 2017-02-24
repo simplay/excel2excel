@@ -6,25 +6,30 @@ import java.util.ArrayList;
  * the files (from file A to file B).
  */
 public class Consolidator extends FileReader {
-    private final ArrayList<CellMapping> cellMappings = new ArrayList<CellMapping>();
+    private ArrayList<CellMapping> cellMappings;
     private Excel inExcel;
-    private Excel outExcel;
+    private ArrayList<Excel> outExcels;
 
     // lookup indices extracted from the `mappings` file.
     // etermines which excel sheet should be used in the FROM and TO excel file
     // for applying the mapping between the excel cells.
-    private int fromSheetIndex;
-    private int toSheetIndex;
+    private ArrayList<Integer> fromSheetIndices;
+    private ArrayList<Integer> toSheetIndices;
+    private int indicesCouner = -1;
 
     /**
      *
      * @param mappingFilePath a text file located at data/
      * @param inExcel
-     * @param outExcel
+     * @param outExcels
      */
-    public Consolidator(String mappingFilePath, Excel inExcel, Excel outExcel) {
+    public Consolidator(String mappingFilePath, Excel inExcel, ArrayList<Excel> outExcels, int outExcelIdx) {
         this.inExcel = inExcel;
-        this.outExcel = outExcel;
+        this.outExcels = outExcels;
+        this.fromSheetIndices = new ArrayList<>();
+        this.toSheetIndices = new ArrayList<>();
+        this.cellMappings = new ArrayList<>();
+
         readFile(mappingFilePath);
 
         // set sheet lookup index
@@ -32,21 +37,29 @@ public class Consolidator extends FileReader {
         //  To do so, we have to change the control-flow of this class:
         //  1. constructor should only load the mapping file and extract mapping information.
         //  2. run the copy process by performing a method call.
-        updateSheetIndices();
+        updateSheetIndices(outExcelIdx);
+
+        ArrayList<CellMapping> sublistCellMappings = new ArrayList<>();
+        for (CellMapping mapping : cellMappings) {
+            if (mapping.getOutExcelFileIdx() == outExcelIdx) {
+                sublistCellMappings.add(mapping);
+            }
+        }
 
         if (Properties.runNormalMode()) {
-            copyFromCellsToToCells();
+            copyFromCellsToToCells(outExcelIdx, sublistCellMappings);
         } else {
             Logger.println("Running in debug mode");
-            runDebugMode();
+            runDebugMode(outExcelIdx, sublistCellMappings);
         }
     }
 
-    private void runDebugMode() {
-        inExcel.setLookupSheetIndex(fromSheetIndex);
-        outExcel.setLookupSheetIndex(toSheetIndex);
+    private void runDebugMode(int outExcelIdx, ArrayList<CellMapping> sublistCellMappings) {
+        inExcel.setLookupSheetIndex(fromSheetIndices.get(outExcelIdx));
+        Excel outExcel = outExcels.get(outExcelIdx);
+        outExcel.setLookupSheetIndex(toSheetIndices.get(outExcelIdx));
         Logger.println("FROM cells with values:");
-        for (CellMapping cellMapping : cellMappings) {
+        for (CellMapping cellMapping : sublistCellMappings) {
             String fromValue = cellMapping.getDefaultValue();
             if (!cellMapping.hasDefaultValue()) {
                 fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
@@ -64,16 +77,17 @@ public class Consolidator extends FileReader {
      * Update sheet indices according to given mapping definition.
      * By default this the sheet index zero is loaded.
      */
-    private void updateSheetIndices() {
-        inExcel.setLookupSheetIndex(fromSheetIndex);
-        outExcel.setLookupSheetIndex(toSheetIndex);
+    private void updateSheetIndices(int outExcelIdx) {
+        inExcel.setLookupSheetIndex(fromSheetIndices.get(outExcelIdx));
+        outExcels.get(outExcelIdx).setSheetAt(outExcelIdx);
     }
 
     /**
      * Takes ever FROM cell and writes it to the corresponding location in the TO excel file.
      */
-    private void copyFromCellsToToCells() {
-        for (CellMapping cellMapping : cellMappings) {
+    private void copyFromCellsToToCells(int outExcelIdx, ArrayList<CellMapping> sublistCellMappings) {
+        Excel outExcel = outExcels.get(outExcelIdx);
+        for (CellMapping cellMapping : sublistCellMappings) {
             String fromValue = cellMapping.getDefaultValue();
             if (!cellMapping.hasDefaultValue()) {
                 fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
@@ -102,11 +116,14 @@ public class Consolidator extends FileReader {
         String[] row = line.split(Properties.WHITESPACE_SEPARATOR);
 
         if (row[0].equals("m")) {
-            fromSheetIndex = Integer.parseInt(row[1]);
-            toSheetIndex = Integer.parseInt(row[2]);
+            int fromSheetIndex = Integer.parseInt(row[1]);
+            int toSheetIndex = Integer.parseInt(row[2]);
             Logger.println("Using from sheet Index " + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
-
+            fromSheetIndices.add(fromSheetIndex);
+            toSheetIndices.add(toSheetIndex);
+            indicesCouner++;
         } else {
+
             // there is a default value specified
             if (!lastRowItemIsNumeric(row)) {
                 int toRowIdx = Integer.parseInt(row[0]);
@@ -114,19 +131,19 @@ public class Consolidator extends FileReader {
                 boolean usesOffset = (row[row.length - 2].equals("1"));
                 String defaultValue = row[row.length - 1];
                 defaultValue = defaultValue.replace("\"", "");
-                cellMappings.add(new CellMapping(toRowIdx, toColIdx, usesOffset, defaultValue));
+                cellMappings.add(new CellMapping(indicesCouner, toRowIdx, toColIdx, usesOffset, defaultValue));
                 return;
             }
 
             int[] items = parseToIntegerArray(row);
             if (items.length > 5) {
                 boolean usesOffset = (items[4] == 1);
-                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset, items[5]));
+                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3], usesOffset, items[5]));
             } else if (items.length > 4) {
                 boolean usesOffset = (items[4] == 1);
-                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3], usesOffset));
+                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3], usesOffset));
             } else {
-                cellMappings.add(new CellMapping(items[0], items[1], items[2], items[3]));
+                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3]));
             }
         }
     }
