@@ -79,7 +79,7 @@ public class Consolidator extends FileReader {
      */
     private void updateSheetIndices(int outExcelIdx) {
         inExcel.setLookupSheetIndex(fromSheetIndices.get(outExcelIdx));
-        outExcels.get(outExcelIdx).setSheetAt(outExcelIdx);
+        outExcels.get(outExcelIdx).setSheetAt(toSheetIndices.get(outExcelIdx));
     }
 
     /**
