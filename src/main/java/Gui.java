@@ -21,6 +21,9 @@ public class Gui extends Frame {
     private String fromExcelPath = "";
     private String toExcelPath1 = "";
     private String toExcelPath2 = "";
+    private FileDialog fileDialogCopyFrom;
+    private FileDialog fileDialogButton1;
+    private FileDialog fileDialogButton2;
 
     /**
      * Build a new GUI to extract and copy the content of certain excel files.
@@ -46,14 +49,13 @@ public class Gui extends Frame {
 
         copyFromButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
-                fileDialog.setVisible(true);
+                fileDialogCopyFrom = new FileDialog(self, "Choose To Excel File");
                 if (Properties.hasBaseExcelPaths()) {
-                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseFromLookupPath()));
+                    fileDialogCopyFrom.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseFromLookupPath()));
                 }
-
+                fileDialogCopyFrom.setVisible(true);
                 try {
-                    fromExcelPath = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    fromExcelPath = Paths.get(fileDialogCopyFrom.getDirectory(), fileDialogCopyFrom.getFile()).toString();
                     fromExcelPath = Properties.normalizedPath(fromExcelPath);
                 } catch (Exception exception) {}
                 useGuiInput = true;
@@ -62,14 +64,13 @@ public class Gui extends Frame {
 
         copyToButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
-                fileDialog.setVisible(true);
+                fileDialogButton1 = new FileDialog(self, "Choose To Excel File");
                 if (Properties.hasBaseExcelPaths()) {
-                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
+                    fileDialogButton1.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
                 }
-
+                fileDialogButton1.setVisible(true);
                 try {
-                    toExcelPath1 = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    toExcelPath1 = Paths.get(fileDialogButton1.getDirectory(), fileDialogButton1.getFile()).toString();
                     toExcelPath1 = Properties.normalizedPath(toExcelPath1);
                 } catch (Exception exception) {}
                 useGuiInput = true;
@@ -78,14 +79,13 @@ public class Gui extends Frame {
 
         copyToButton2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FileDialog fileDialog = new FileDialog(self, "Choose To Excel File");
-                fileDialog.setVisible(true);
+                fileDialogButton2 = new FileDialog(self, "Choose To Excel File");
                 if (Properties.hasBaseExcelPaths()) {
-                    fileDialog.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
+                    fileDialogButton2.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseToLookupPath()));
                 }
-
+                fileDialogButton2 .setVisible(true);
                 try {
-                    toExcelPath2 = Paths.get(fileDialog.getDirectory(), fileDialog.getFile()).toString();
+                    toExcelPath2 = Paths.get(fileDialogButton2.getDirectory(), fileDialogButton2.getFile()).toString();
                     toExcelPath2 = Properties.normalizedPath(toExcelPath2);
                 } catch (Exception exception) {}
                 useGuiInput = true;
