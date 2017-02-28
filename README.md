@@ -42,6 +42,18 @@ A config file `./data/config.txt` can optionally be specified. Further informati
 
 To execute the Jar, run `java -jar target/excel2excel.jar` within the project's root directory.
 
+## Limitations
+
+**Problem**: Writing `.xls` files is problematic, since at most 256 columns can be written. when trying to access a column index larger than
+`255`, the following exception is thrown: 
+
+```java
+java.lang.IllegalArgumentException: Invalid column index (256).  Allowable column range for BIFF8 is (0..255) or ('A'..'IV')
+```
+
+**Workaround**: Use a `.xlsx` file instead. Any `.xls` file can easily be converted to this file format by using excel. 
+
+
 ## Runtime Arguments
 
 The program can take up to four arguments:
