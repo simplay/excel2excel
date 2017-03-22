@@ -15,15 +15,14 @@ public class CellContent {
 			return;
 		}
 		
-		CellType temp_type = cell.getCellTypeEnum();
+		type = cell.getCellTypeEnum();
 		
 		wasFormula = false;
-		if(temp_type == CellType.FORMULA) {
-			temp_type = cell.getCachedFormulaResultTypeEnum();
+		if(type == CellType.FORMULA) {
+			type = cell.getCachedFormulaResultTypeEnum();
 			wasFormula = true;
 		}
 		
-		type = temp_type;
 		switch(type) {
 			case BLANK:
 				break;
@@ -57,8 +56,9 @@ public class CellContent {
 	}
 	
 	public boolean isBlank() {
-		if(wasFormula)
+		if(wasFormula) {
 			return false;
+		}
 		
 		switch(type) {
 			case BLANK:

@@ -1,3 +1,9 @@
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+
 public abstract class Excel {
 
     protected int sheetIndex;
@@ -18,7 +24,23 @@ public abstract class Excel {
      * @param startColIdx cell column index we want to start our search.
      * @return free column index.
      */
-    public abstract int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx);
+    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
+        int colIdx = startColIdx;
+        Cell cell;
+        CellContent content;
+        Row row = getRow(rowIdx);
+        if(row == null) {
+        	return colIdx;
+        }
+        colIdx--;
+        do {
+            colIdx++;
+            cell = row.getCell(colIdx);
+            content = new CellContent(cell);
+        } while(!content.isBlank());
+        
+        return colIdx;
+    }
 
     /**
      * Fetch the string value of the target cell's value.
@@ -31,7 +53,23 @@ public abstract class Excel {
      * @return string representation of target cell.
      */
     public abstract CellContent getCellValue(int rowIdx, int columnIdx);
+    
+    /**
+     * Get the currently loaded sheet of the loaded excel file.
+     *
+     * @return the current excel sheet
+     */
+    public abstract Sheet getSheet();
 
+    /**
+     * Get the row by an index from the current sheet.
+     * First row index is 0.
+     *
+     * @param rowIdx cell row index
+     * @return row at given row index.
+     */
+    public abstract Row getRow(int rowIdx);
+    
     /**
      * Write a given content to a cell at a given location.s
      *
@@ -42,7 +80,44 @@ public abstract class Excel {
      * @param rowIdx cell row index
      * @param columnIdx cell column index
      */
-    public abstract void writeCell(CellContent content, int rowIdx, int columnIdx);
+    public void writeCell(CellContent content, int rowIdx, int columnIdx) {
+        Row row = null;
+        Cell cell = null;
+
+        row = getRow(rowIdx);
+        if (row == null) {
+            Logger.printError("Row " + rowIdx + " does yet not exist. Creating new row...");
+            row = getSheet().createRow(rowIdx);
+        }
+
+        cell = row.getCell(columnIdx);
+        if (cell == null) {
+            Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
+            cell = row.createCell(columnIdx);
+        }
+        
+		cell.setCellType(content.type);
+        switch(content.type) {
+    		case BLANK:
+    			break;
+    		
+        	case NUMERIC:
+        		cell.setCellValue(content.numeric);
+        		break;
+        		
+        	case BOOLEAN:
+        		cell.setCellValue(content.bool);
+        		break;
+        		
+        	case STRING:
+        		cell.setCellValue(content.string);
+        		break;
+        		
+        	default:
+        		Logger.printError("Cell at column " + columnIdx + " could not be written. Invalid cell content given.");
+        		break;
+        }
+    }
 
     public void setLookupSheetIndex(int sheetIndex) {
         this.sheetIndex = sheetIndex;

@@ -56,56 +56,6 @@ public class XlsxExcelFile extends Excel {
         this(filePath, 0);
     }
 
-    /**
-     * Write a given string to a cell at a given location.
-     *
-     * Calling this function will not overwrite the excel file.
-     * It only updates its state.
-     *
-     * @param content new cell value
-     * @param rowIdx cell row index
-     * @param columnIdx cell column index
-     */
-    @Override
-    public void writeCell(CellContent content, int rowIdx, int columnIdx) {
-        Row row = null;
-        Cell cell = null;
-
-        row = getRow(rowIdx);
-        if (row == null) {
-            Logger.printError("Row " + rowIdx + " does yet not exist. Creating new row...");
-            row = getSheet().createRow(rowIdx);
-        }
-
-        cell = row.getCell(columnIdx);
-        if (cell == null) {
-            Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
-            cell = row.createCell(columnIdx);
-        }
-        
-		cell.setCellType(content.type);
-        switch(content.type) {
-    		case BLANK:
-    			break;
-    		
-        	case NUMERIC:
-        		cell.setCellValue(content.numeric);
-        		break;
-        		
-        	case BOOLEAN:
-        		cell.setCellValue(content.bool);
-        		break;
-        		
-        	case STRING:
-        		cell.setCellValue(content.string);
-        		break;
-        		
-        	default:
-        		Logger.printError("Cell at column " + columnIdx + " could not be written. Invalid cell content given.");
-        		break;
-        }
-    }
-
     @Override
     protected void setSheetAt(int sheetIndex) {
         sheet = workbook.getSheetAt(sheetIndex);
@@ -135,34 +85,9 @@ public class XlsxExcelFile extends Excel {
      * @param rowIdx cell row index
      * @return row at given row index.
      */
+    @Override
     public XSSFRow getRow(int rowIdx) {
         return getSheet().getRow(rowIdx);
-    }
-
-    /**
-     * Find the next free cell-column index for a given row index.
-     * Please note that the first index value is represented by the value 0.
-     *
-     * @param rowIdx cell row index.
-     * @param startColIdx cell column index we want to start our search.
-     * @return free column index.
-     */
-    @Override
-    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
-        int colIdx = startColIdx;
-        XSSFCell cell;
-        CellContent content;
-        XSSFRow row = getRow(rowIdx);
-        if(row == null)
-        	return colIdx;
-        colIdx--;
-        do {
-            colIdx++;
-            cell = row.getCell(colIdx);
-            content = new CellContent(cell);
-        } while(!content.isBlank());
-        
-        return colIdx;
     }
 
     /**
@@ -191,6 +116,7 @@ public class XlsxExcelFile extends Excel {
      *
      * @retur the current excel sheet
      */
+    @Override
     public XSSFSheet getSheet() {
         return sheet;
     }
