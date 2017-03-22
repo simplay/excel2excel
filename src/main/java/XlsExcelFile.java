@@ -2,6 +2,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import java.io.*;
@@ -62,7 +63,7 @@ public class XlsExcelFile extends Excel {
      * @param columnIdx cell column index
      */
     @Override
-    public void writeCell(String content, int rowIdx, int columnIdx) {
+    public void writeCell(CellContent content, int rowIdx, int columnIdx) {
         Row row = null;
         Cell cell = null;
 
@@ -78,7 +79,26 @@ public class XlsExcelFile extends Excel {
             cell = row.createCell(columnIdx);
         }
 
-        cell.setCellValue(content);
+        switch(content.type) {
+        	case BLANK:
+        		break;
+			
+        	case NUMERIC:
+        		cell.setCellValue(content.numeric);
+        		break;
+        		
+        	case BOOLEAN:
+        		cell.setCellValue(content.bool);
+        		break;
+        		
+        	case STRING:
+        		cell.setCellValue(content.string);
+        		break;
+        		
+        	default:
+        		Logger.printError("Cell at column " + columnIdx + " could not be written. Invalid cell content given.");
+        		break;
+        }
     }
 
     @Override
@@ -96,6 +116,7 @@ public class XlsExcelFile extends Excel {
     public void save() {
         try {
             FileOutputStream stream = new FileOutputStream(filePath);
+            HSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
             workbook.write(stream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,16 +145,18 @@ public class XlsExcelFile extends Excel {
     @Override
     public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
         int colIdx = startColIdx;
-        HSSFCell content;
+        HSSFCell cell;
+        CellContent content;
+        HSSFRow row = getRow(rowIdx);
+        if (row == null)
+        	return colIdx;
+        colIdx--;
         do {
-            HSSFRow row = getRow(rowIdx);
-            if (row == null) break;
-            content = row.getCell(colIdx);
-
             colIdx++;
-        } while (content != null);
-        if (colIdx == startColIdx) return startColIdx;
-        return colIdx - 1;
+            cell = row.getCell(colIdx);
+            content = new CellContent(cell);
+        } while (!content.isBlank());
+        return colIdx;
     }
 
     /**
@@ -147,36 +170,20 @@ public class XlsExcelFile extends Excel {
      * @return string representation of target cell.
      */
     @Override
-    public String getCellValue(int rowIdx, int columnIdx) {
-        String cellContent = "";
+    public CellContent getCellValue(int rowIdx, int columnIdx) {
         HSSFRow row = getRow(rowIdx);
         if (row == null) return null;
 
         HSSFCell cell = getRow(rowIdx).getCell(columnIdx);
         if (cell == null) return null;
-
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
-                cellContent = String.valueOf(cell.getStringCellValue());
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                cellContent = cell.getStringCellValue();
-                if (cellContent.contains(".")) {
-                    cellContent = String.valueOf(cell.getNumericCellValue());
-                }
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                cellContent = String.valueOf(cell.getBooleanCellValue());
-                break;
-            default:
-        }
-        return cellContent;
+        
+        return new CellContent(cell);
     }
 
     /**
      * Get the currently loaded sheet of the loaded excel file.
      *
-     * @retur the current excel sheet
+     * @return the current excel sheet
      */
     public HSSFSheet getSheet() {
         return sheet;

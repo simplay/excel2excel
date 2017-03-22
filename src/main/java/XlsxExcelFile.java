@@ -4,6 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 
 import java.io.*;
 
@@ -66,7 +67,7 @@ public class XlsxExcelFile extends Excel {
      * @param columnIdx cell column index
      */
     @Override
-    public void writeCell(String content, int rowIdx, int columnIdx) {
+    public void writeCell(CellContent content, int rowIdx, int columnIdx) {
         Row row = null;
         Cell cell = null;
 
@@ -81,8 +82,28 @@ public class XlsxExcelFile extends Excel {
             Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
             cell = row.createCell(columnIdx);
         }
-
-        cell.setCellValue(content);
+        
+		cell.setCellType(content.type);
+        switch(content.type) {
+    		case BLANK:
+    			break;
+    		
+        	case NUMERIC:
+        		cell.setCellValue(content.numeric);
+        		break;
+        		
+        	case BOOLEAN:
+        		cell.setCellValue(content.bool);
+        		break;
+        		
+        	case STRING:
+        		cell.setCellValue(content.string);
+        		break;
+        		
+        	default:
+        		Logger.printError("Cell at column " + columnIdx + " could not be written. Invalid cell content given.");
+        		break;
+        }
     }
 
     @Override
@@ -100,6 +121,7 @@ public class XlsxExcelFile extends Excel {
     public void save() {
         try {
             FileOutputStream stream = new FileOutputStream(filePath);
+            XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
             workbook.write(stream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -128,16 +150,19 @@ public class XlsxExcelFile extends Excel {
     @Override
     public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
         int colIdx = startColIdx;
-        XSSFCell content;
+        XSSFCell cell;
+        CellContent content;
+        XSSFRow row = getRow(rowIdx);
+        if(row == null)
+        	return colIdx;
+        colIdx--;
         do {
-            XSSFRow row = getRow(rowIdx);
-            if (row == null) break;
-            content = row.getCell(colIdx);
-            
             colIdx++;
-        } while (content != null);
-        if (colIdx == startColIdx) return startColIdx;
-        return colIdx - 1;
+            cell = row.getCell(colIdx);
+            content = new CellContent(cell);
+        } while(!content.isBlank());
+        
+        return colIdx;
     }
 
     /**
@@ -151,30 +176,14 @@ public class XlsxExcelFile extends Excel {
      * @return string representation of target cell.
      */
     @Override
-    public String getCellValue(int rowIdx, int columnIdx) {
-        String cellContent = "";
+    public CellContent getCellValue(int rowIdx, int columnIdx) {
         XSSFRow row = getRow(rowIdx);
         if (row == null) return null;
 
         XSSFCell cell = getRow(rowIdx).getCell(columnIdx);
         if (cell == null) return null;
-
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
-                cellContent = String.valueOf(cell.getStringCellValue());
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                cellContent = cell.getRawValue();
-                if (cellContent.contains(".")) {
-                    cellContent = String.valueOf(cell.getNumericCellValue());
-                }
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                cellContent = String.valueOf(cell.getBooleanCellValue());
-                break;
-            default:
-        }
-        return cellContent;
+        
+        return new CellContent(cell);
     }
 
     /**

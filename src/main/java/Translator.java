@@ -45,12 +45,12 @@ public class Translator extends FileReader{
      * @param toBeTranslated
      * @return
      */
-    public static String lookup(int lookupRow, String toBeTranslated) {
+    public static double lookup(int lookupRow, String toBeTranslated) {
         Scale scale = getInstance().getScales().get(lookupRow);
 
         // normalize to be translated string
         String normalizedString = normalizedInputTranslation(toBeTranslated);
-        return Integer.toString(scale.getValueByLabel(normalizedString));
+        return scale.getValueByLabel(normalizedString);
     }
 
     /**

@@ -123,16 +123,16 @@ public class Gui extends Frame {
                     toExcels.add(ExcelBuilder.build(Properties.getToExcelFilePath1()));
                     toExcels.add(ExcelBuilder.build(Properties.getToExcelFilePath2()));
                     Logger.println(" => Excel files read.");
+                    Logger.println("Copying content from FROM excel file to TO files ...");
+                    new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcels);
+                    Logger.println(" => Content copied.");
 
                     for (int k = 0; k < 2; k++) {
-                        Logger.println("Copying content from FROM excel file to TO file " + k + "...");
-                        new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcels, k);
-                        Logger.println(" => Content copied.");
-                        Logger.println("Saving TO excel file...");
+                        Logger.println("Saving TO excel file " + k + "...");
                         toExcels.get(k).save();
                         Logger.println(" => TO file saved.");
-                        Logger.println("Excel2Excel successfully finished.");
                     }
+                    Logger.println("Excel2Excel successfully finished.");
                 } catch (Exception e) {
                     Logger.printError(e.getMessage());
                 }

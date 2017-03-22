@@ -30,10 +30,10 @@ public abstract class Excel {
      * @param columnIdx column index in current excel sheet.
      * @return string representation of target cell.
      */
-    public abstract String getCellValue(int rowIdx, int columnIdx);
+    public abstract CellContent getCellValue(int rowIdx, int columnIdx);
 
     /**
-     * Write a given string to a cell at a given location.
+     * Write a given content to a cell at a given location.s
      *
      * Calling this function will not overwrite the excel file.
      * It only updates its state.
@@ -42,7 +42,7 @@ public abstract class Excel {
      * @param rowIdx cell row index
      * @param columnIdx cell column index
      */
-    public abstract void writeCell(String content, int rowIdx, int columnIdx);
+    public abstract void writeCell(CellContent content, int rowIdx, int columnIdx);
 
     public void setLookupSheetIndex(int sheetIndex) {
         this.sheetIndex = sheetIndex;
