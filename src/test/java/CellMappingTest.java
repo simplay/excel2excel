@@ -8,7 +8,7 @@ public class CellMappingTest {
 
     @Test
     public void testCreateSimpleFromToMapping() {
-        CellMapping m = new CellMapping(0, 1, 2, 3, 4);
+        CellMapping m = new CellMapping(1, 2, 3, 4);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());
@@ -26,7 +26,7 @@ public class CellMappingTest {
 
     @Test
     public void testCreateWithDefault() {
-        CellMapping m = new CellMapping(0, 1, 2, true, "foobar");
+        CellMapping m = new CellMapping(1, 2, true, "foobar");
 
         assertEquals(-1, m.getFromRowIndex());
         assertEquals(-1, m.getFromColumnIndex());
@@ -44,7 +44,7 @@ public class CellMappingTest {
 
     @Test
     public void testCreateWithCascadingColumn() {
-        CellMapping m = new CellMapping(0, 1, 2, 3, 4, false);
+        CellMapping m = new CellMapping(1, 2, 3, 4, false);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());
@@ -62,7 +62,7 @@ public class CellMappingTest {
 
     @Test
     public void testCreateWithTranslationRow() {
-        CellMapping m = new CellMapping(0, 1, 2, 3, 4, true, 5);
+        CellMapping m = new CellMapping(1, 2, 3, 4, true, 5);
 
         assertEquals(1, m.getFromRowIndex());
         assertEquals(2, m.getFromColumnIndex());
