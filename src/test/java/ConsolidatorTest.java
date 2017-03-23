@@ -44,15 +44,15 @@ public class ConsolidatorTest {
         dst.save();
 
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
-        assertEquals(src.getCellValue(0,0).toString(), excel.getCellValue(0, 0).toString());
-        assertEquals(src.getCellValue(0,1).toString(), excel.getCellValue(0, 1).toString());
-        assertEquals(src.getCellValue(0,2).toString(), excel.getCellValue(0, 2).toString());
-        assertEquals(src.getCellValue(1,0).toString(), excel.getCellValue(1, 0).toString());
-        assertEquals(src.getCellValue(1,1).toString(), excel.getCellValue(1, 1).toString());
-        assertEquals(src.getCellValue(1,2).toString(), excel.getCellValue(1, 2).toString());
-        assertEquals(src.getCellValue(2,0).toString(), excel.getCellValue(2, 0).toString());
-        assertEquals(src.getCellValue(2,1).toString(), excel.getCellValue(2, 1).toString());
-        assertEquals(src.getCellValue(2,2).toString(), excel.getCellValue(2, 2).toString());
+        assertEquals(src.getCellValue(0,0), excel.getCellValue(0, 0));
+        assertEquals(src.getCellValue(0,1), excel.getCellValue(0, 1));
+        assertEquals(src.getCellValue(0,2), excel.getCellValue(0, 2));
+        assertEquals(src.getCellValue(1,0), excel.getCellValue(1, 0));
+        assertEquals(src.getCellValue(1,1), excel.getCellValue(1, 1));
+        assertEquals(src.getCellValue(1,2), excel.getCellValue(1, 2));
+        assertEquals(src.getCellValue(2,0), excel.getCellValue(2, 0));
+        assertEquals(src.getCellValue(2,1), excel.getCellValue(2, 1));
+        assertEquals(src.getCellValue(2,2), excel.getCellValue(2, 2));
 
         assertNotEquals(src.getCellValue(0,0), excel.getCellValue(0, 1));
     }

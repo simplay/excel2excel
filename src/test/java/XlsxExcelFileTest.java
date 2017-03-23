@@ -53,15 +53,15 @@ public class XlsxExcelFileTest {
     public void testSimpleConstructurUsesFirstExcelSheet() {
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
         XlsxExcelFile excelZero = new XlsxExcelFile(TestHelper.getReadOnlyFilePath());
-        assertEquals(excelZero.getCellValue(0, 0).toString(), excel.getCellValue(0, 0).toString());
-        assertEquals(excelZero.getCellValue(0, 1).toString(), excel.getCellValue(0, 1).toString());
-        assertEquals(excelZero.getCellValue(0, 2).toString(), excel.getCellValue(0, 2).toString());
-        assertEquals(excelZero.getCellValue(1, 0).toString(), excel.getCellValue(1, 0).toString());
-        assertEquals(excelZero.getCellValue(1, 1).toString(), excel.getCellValue(1, 1).toString());
-        assertEquals(excelZero.getCellValue(1, 2).toString(), excel.getCellValue(1, 2).toString());
-        assertEquals(excelZero.getCellValue(2, 0).toString(), excel.getCellValue(2, 0).toString());
-        assertEquals(excelZero.getCellValue(2, 1).toString(), excel.getCellValue(2, 1).toString());
-        assertEquals(excelZero.getCellValue(2, 2).toString(), excel.getCellValue(2, 2).toString());
+        assertEquals(excelZero.getCellValue(0, 0), excel.getCellValue(0, 0));
+        assertEquals(excelZero.getCellValue(0, 1), excel.getCellValue(0, 1));
+        assertEquals(excelZero.getCellValue(0, 2), excel.getCellValue(0, 2));
+        assertEquals(excelZero.getCellValue(1, 0), excel.getCellValue(1, 0));
+        assertEquals(excelZero.getCellValue(1, 1), excel.getCellValue(1, 1));
+        assertEquals(excelZero.getCellValue(1, 2), excel.getCellValue(1, 2));
+        assertEquals(excelZero.getCellValue(2, 0), excel.getCellValue(2, 0));
+        assertEquals(excelZero.getCellValue(2, 1), excel.getCellValue(2, 1));
+        assertEquals(excelZero.getCellValue(2, 2), excel.getCellValue(2, 2));
     }
 
     @Test

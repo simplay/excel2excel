@@ -69,7 +69,7 @@ public class CellContent {
 				return false;
 				
 			case STRING:
-				return string == "";
+				return string.equals("");
 				
 			default:
 				return false;
@@ -93,5 +93,48 @@ public class CellContent {
 			default:
 				return "[unknown]";
 		}
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof CellContent) {
+			return this.equals((CellContent) other);
+		}
+		return false;
+	}
+	
+	public boolean equals(CellContent other) {
+		if(type == CellType.NUMERIC && other.type == CellType.STRING) {
+			try {
+				double other_numeric = Integer.parseInt(other.string);
+				return numeric == other_numeric;
+			} catch(NumberFormatException e) {
+				return false;
+			}
+		}
+		
+		if(type == CellType.STRING && other.type == CellType.NUMERIC) {
+			return other.equals(this);
+		}
+		
+		if(type == other.type) {
+			switch(type) {
+				case BLANK:
+					return true;
+			
+				case BOOLEAN:
+					return bool == other.bool;
+				
+				case NUMERIC:
+					return numeric == other.numeric;
+					
+				case STRING:
+					return string == other.string;
+					
+				default:
+					return false;
+			}
+		}
+		return false;
 	}
 }
