@@ -1,4 +1,9 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * A consolidator knows the cell mapping between
@@ -15,7 +20,9 @@ public class Consolidator extends FileReader {
     // for applying the mapping between the excel cells.
     private ArrayList<Integer> fromSheetIndices;
     private ArrayList<Integer> toSheetIndices;
-    private int indicesCouner = -1;
+    private ArrayList<Integer> toExcelIndices;
+    private int currentOutIdx = -1;
+    private int currentMappingIdx = -1;
 
     /**
      *
@@ -23,35 +30,58 @@ public class Consolidator extends FileReader {
      * @param inExcel
      * @param outExcels
      */
-    public Consolidator(String mappingFilePath, Excel inExcel, ArrayList<Excel> outExcels, int outExcelIdx) {
+    public Consolidator(String mappingFilePath, Excel inExcel, ArrayList<Excel> outExcels) {
         this.inExcel = inExcel;
         this.outExcels = outExcels;
         this.fromSheetIndices = new ArrayList<>();
         this.toSheetIndices = new ArrayList<>();
+        this.toExcelIndices = new ArrayList<>();
         this.cellMappings = new ArrayList<>();
 
         readFile(mappingFilePath);
-
-        // set sheet lookup index
-        // TODO: refactor this: Set index when creating the excel instances.
-        //  To do so, we have to change the control-flow of this class:
-        //  1. constructor should only load the mapping file and extract mapping information.
-        //  2. run the copy process by performing a method call.
-        updateSheetIndices(outExcelIdx);
-
-        ArrayList<CellMapping> sublistCellMappings = new ArrayList<>();
-        for (CellMapping mapping : cellMappings) {
-            if (mapping.getOutExcelFileIdx() == outExcelIdx) {
-                sublistCellMappings.add(mapping);
+        
+        int mappingIdx = 0;
+        for (int outExcelIdx: toExcelIndices) {
+            updateSheetIndices(outExcelIdx, mappingIdx);
+        	ArrayList<CellMapping> sublistCellMappings = new ArrayList<>();
+	        for (CellMapping mapping : cellMappings) {
+	            if (mapping.getMappingIdx() == mappingIdx) {
+	                sublistCellMappings.add(mapping);
+	            }
+	        }
+	
+	        if (Properties.runNormalMode()) {
+	            copyFromCellsToToCells(outExcelIdx, sublistCellMappings);
+	        } else {
+	            Logger.println("Running in debug mode");
+	            runDebugMode(outExcelIdx, sublistCellMappings);
+	        }
+	        mappingIdx++;
+        }
+    }
+    
+    private CellContent processCellMapping(CellMapping cellMapping) {
+    	CellContent fromValue = new CellContent(cellMapping.getDefaultValue());
+        
+        if(cellMapping.hasDateFormatConversion()) {
+        	fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
+        	if(fromValue.type != CellType.NUMERIC) {
+        		Logger.printError("Source cell in date conversion did not contain a numeric.");
+        	} else {
+        		Date javaDate = DateUtil.getJavaDate(fromValue.numeric);
+        		fromValue = new CellContent(new SimpleDateFormat(cellMapping.getDefaultValue()).format(javaDate));
+        	}
+        }
+        
+        if (!cellMapping.hasDefaultValue()) {
+            fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
+            if (cellMapping.hasTranslation() && fromValue.type == CellType.STRING) {
+            	fromValue.type = CellType.NUMERIC;
+                fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
             }
         }
-
-        if (Properties.runNormalMode()) {
-            copyFromCellsToToCells(outExcelIdx, sublistCellMappings);
-        } else {
-            Logger.println("Running in debug mode");
-            runDebugMode(outExcelIdx, sublistCellMappings);
-        }
+        
+        return fromValue;
     }
 
     private void runDebugMode(int outExcelIdx, ArrayList<CellMapping> sublistCellMappings) {
@@ -60,13 +90,7 @@ public class Consolidator extends FileReader {
         outExcel.setLookupSheetIndex(toSheetIndices.get(outExcelIdx));
         Logger.println("FROM cells with values:");
         for (CellMapping cellMapping : sublistCellMappings) {
-            String fromValue = cellMapping.getDefaultValue();
-            if (!cellMapping.hasDefaultValue()) {
-                fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
-                if (cellMapping.hasTranslation()) {
-                    fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
-                }
-            }
+            CellContent fromValue = processCellMapping(cellMapping);
             String fromCell = "(" + cellMapping.getFromRowIndex() + "," + cellMapping.getFromColumnIndex() + ")";
             String toCell = "(" + cellMapping.getToRowIndex() + "," + cellMapping.getToColumnIndex() + ")";
             Logger.println(" + " + fromValue + ": " + fromCell + " -> " + toCell);
@@ -77,9 +101,9 @@ public class Consolidator extends FileReader {
      * Update sheet indices according to given mapping definition.
      * By default this the sheet index zero is loaded.
      */
-    private void updateSheetIndices(int outExcelIdx) {
-        inExcel.setLookupSheetIndex(fromSheetIndices.get(outExcelIdx));
-        outExcels.get(outExcelIdx).setSheetAt(toSheetIndices.get(outExcelIdx));
+    private void updateSheetIndices(int outExcelIdx, int mappingIdx) {
+        inExcel.setLookupSheetIndex(fromSheetIndices.get(mappingIdx));
+        outExcels.get(outExcelIdx).setSheetAt(toSheetIndices.get(mappingIdx));
     }
 
     /**
@@ -88,14 +112,7 @@ public class Consolidator extends FileReader {
     private void copyFromCellsToToCells(int outExcelIdx, ArrayList<CellMapping> sublistCellMappings) {
         Excel outExcel = outExcels.get(outExcelIdx);
         for (CellMapping cellMapping : sublistCellMappings) {
-            String fromValue = cellMapping.getDefaultValue();
-            if (!cellMapping.hasDefaultValue()) {
-                fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
-                if (cellMapping.hasTranslation()) {
-                    fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
-                }
-            }
-
+            CellContent fromValue = processCellMapping(cellMapping);
             int toColumnIndex = cellMapping.getToColumnIndex();
 
             // TODO: Do this just once in the very beginning to determine the target column
@@ -116,34 +133,47 @@ public class Consolidator extends FileReader {
         String[] row = line.split(Properties.WHITESPACE_SEPARATOR);
 
         if (row[0].equals("m")) {
-            int fromSheetIndex = Integer.parseInt(row[1]);
-            int toSheetIndex = Integer.parseInt(row[2]);
-            Logger.println("Using from sheet Index " + fromSheetIndex + " an TO sheet index: " + toSheetIndex + " for performing cell lookups.");
+            currentOutIdx = Integer.parseInt(row[1]);
+            int fromSheetIndex = Integer.parseInt(row[2]);
+            int toSheetIndex = Integer.parseInt(row[3]);
+            Logger.println("Using from sheet Index " + fromSheetIndex + " and TO sheet index: " + toSheetIndex + " for performing cell lookups in Excel TO " + currentOutIdx + ".");
             fromSheetIndices.add(fromSheetIndex);
             toSheetIndices.add(toSheetIndex);
-            indicesCouner++;
+            toExcelIndices.add(currentOutIdx);
+            currentMappingIdx++;
         } else {
 
-            // there is a default value specified
+            // there is a default value specified or date format
             if (!lastRowItemIsNumeric(row)) {
+            	if(row.length > 5) {
+                    int fromRowIdx = Integer.parseInt(row[0]);
+                    int fromColIdx = Integer.parseInt(row[1]);
+                    int toRowIdx = Integer.parseInt(row[2]);
+                    int toColIdx = Integer.parseInt(row[3]);
+                    boolean usesOffset = (row[4].equals("1"));
+                    String dateFormat = row[5];
+                    dateFormat = dateFormat.replace("\"", "");
+                    cellMappings.add(new CellMapping(currentMappingIdx, fromRowIdx, fromColIdx, toRowIdx, toColIdx, usesOffset, dateFormat, -1));
+            		return;
+            	}
                 int toRowIdx = Integer.parseInt(row[0]);
                 int toColIdx = Integer.parseInt(row[1]);
                 boolean usesOffset = (row[row.length - 2].equals("1"));
                 String defaultValue = row[row.length - 1];
                 defaultValue = defaultValue.replace("\"", "");
-                cellMappings.add(new CellMapping(indicesCouner, toRowIdx, toColIdx, usesOffset, defaultValue));
+                cellMappings.add(new CellMapping(currentMappingIdx, toRowIdx, toColIdx, usesOffset, defaultValue));
                 return;
             }
 
             int[] items = parseToIntegerArray(row);
             if (items.length > 5) {
                 boolean usesOffset = (items[4] == 1);
-                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3], usesOffset, items[5]));
+                cellMappings.add(new CellMapping(currentMappingIdx, items[0], items[1], items[2], items[3], usesOffset, items[5]));
             } else if (items.length > 4) {
                 boolean usesOffset = (items[4] == 1);
-                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3], usesOffset));
+                cellMappings.add(new CellMapping(currentMappingIdx, items[0], items[1], items[2], items[3], usesOffset));
             } else {
-                cellMappings.add(new CellMapping(indicesCouner, items[0], items[1], items[2], items[3]));
+                cellMappings.add(new CellMapping(currentMappingIdx, items[0], items[1], items[2], items[3]));
             }
         }
     }

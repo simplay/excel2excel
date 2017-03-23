@@ -16,7 +16,7 @@ public class CellMappingTest {
         assertEquals(4, m.getToColumnIndex());
 
         assertFalse(m.hasTranslation());
-        assertEquals(-1, m.getTranslationRow());
+        assertEquals(-2, m.getTranslationRow());
 
         assertFalse(m.hasDefaultValue());
         assertEquals("", m.getDefaultValue());
@@ -34,7 +34,7 @@ public class CellMappingTest {
         assertEquals(2, m.getToColumnIndex());
 
         assertFalse(m.hasTranslation());
-        assertEquals(-1, m.getTranslationRow());
+        assertEquals(-2, m.getTranslationRow());
 
         assertTrue(m.hasDefaultValue());
         assertEquals("foobar", m.getDefaultValue());
@@ -52,7 +52,7 @@ public class CellMappingTest {
         assertEquals(4, m.getToColumnIndex());
 
         assertFalse(m.hasTranslation());
-        assertEquals(-1, m.getTranslationRow());
+        assertEquals(-2, m.getTranslationRow());
 
         assertFalse(m.hasDefaultValue());
         assertEquals("", m.getDefaultValue());

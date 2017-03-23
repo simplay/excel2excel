@@ -38,15 +38,15 @@ public class XlsxExcelFileTest {
     @Test
     public void testCanReadExcelContent() {
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getReadOnlyFilePath(), 0);
-        assertEquals("1", excel.getCellValue(0, 0));
-        assertEquals("2", excel.getCellValue(0, 1));
-        assertEquals("3", excel.getCellValue(0, 2));
-        assertEquals("4", excel.getCellValue(1, 0));
-        assertEquals("5", excel.getCellValue(1, 1));
-        assertEquals("6", excel.getCellValue(1, 2));
-        assertEquals("7", excel.getCellValue(2, 0));
-        assertEquals("8", excel.getCellValue(2, 1));
-        assertEquals("9", excel.getCellValue(2, 2));
+        assertEquals("1.0", excel.getCellValue(0, 0).toString());
+        assertEquals("2.0", excel.getCellValue(0, 1).toString());
+        assertEquals("3.0", excel.getCellValue(0, 2).toString());
+        assertEquals("4.0", excel.getCellValue(1, 0).toString());
+        assertEquals("5.0", excel.getCellValue(1, 1).toString());
+        assertEquals("6.0", excel.getCellValue(1, 2).toString());
+        assertEquals("7.0", excel.getCellValue(2, 0).toString());
+        assertEquals("8.0", excel.getCellValue(2, 1).toString());
+        assertEquals("9.0", excel.getCellValue(2, 2).toString());
     }
 
     @Test
@@ -76,15 +76,15 @@ public class XlsxExcelFileTest {
     public void testCanWriteCell() {
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
-        excel.writeCell("foobar1337", 0, 0);
-        assertEquals("foobar1337", excel.getCellValue(0, 0));
+        excel.writeCell(new CellContent("foobar1337"), 0, 0);
+        assertEquals("foobar1337", excel.getCellValue(0, 0).toString());
     }
 
     @Test
     public void testWrieDoesNotOverwriteFile() {
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
-        excel.writeCell("foobar1337", 0, 0);
+        excel.writeCell(new CellContent("foobar1337"), 0, 0);
         excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
         assertEquals(null, excel.getCellValue(0, 0));
     }
@@ -92,11 +92,11 @@ public class XlsxExcelFileTest {
     @Test
     public void testSave() {
         XlsxExcelFile excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
-        excel.writeCell("foobar1337", 0, 0);
-        assertEquals("foobar1337", excel.getCellValue(0, 0));
+        excel.writeCell(new CellContent("foobar1337"), 0, 0);
+        assertEquals("foobar1337", excel.getCellValue(0, 0).toString());
         excel.save();
         excel = new XlsxExcelFile(TestHelper.getWritableFilePath(), 0);
-        assertEquals("foobar1337", excel.getCellValue(0, 0));
+        assertEquals("foobar1337", excel.getCellValue(0, 0).toString());
     }
 
     @Test
@@ -117,14 +117,14 @@ public class XlsxExcelFileTest {
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 2));
         assertEquals(3, excel.findEmptyCellColumnAtFixedRow(0, 3));
 
-        excel.writeCell("foobar1337", 0, 0);
+        excel.writeCell(new CellContent("foobar1337"), 0, 0);
 
         assertEquals(1, excel.findEmptyCellColumnAtFixedRow(0, 0));
         assertEquals(1, excel.findEmptyCellColumnAtFixedRow(0, 1));
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 2));
         assertEquals(3, excel.findEmptyCellColumnAtFixedRow(0, 3));
 
-        excel.writeCell("foobar1337", 0, 1);
+        excel.writeCell(new CellContent("foobar1337"), 0, 1);
 
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 0));
         assertEquals(2, excel.findEmptyCellColumnAtFixedRow(0, 1));

@@ -2,6 +2,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import java.io.*;
@@ -51,36 +52,6 @@ public class XlsExcelFile extends Excel {
         this(filePath, 0);
     }
 
-    /**
-     * Write a given string to a cell at a given location.
-     *
-     * Calling this function will not overwrite the excel file.
-     * It only updates its state.
-     *
-     * @param content new cell value
-     * @param rowIdx cell row index
-     * @param columnIdx cell column index
-     */
-    @Override
-    public void writeCell(String content, int rowIdx, int columnIdx) {
-        Row row = null;
-        Cell cell = null;
-
-        row = getRow(rowIdx);
-        if (row == null) {
-            Logger.printError("Row " + rowIdx + " does yet not exist. Creating new row...");
-            row = getSheet().createRow(rowIdx);
-        }
-
-        cell = row.getCell(columnIdx);
-        if (cell == null) {
-            Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
-            cell = row.createCell(columnIdx);
-        }
-
-        cell.setCellValue(content);
-    }
-
     @Override
     protected void setSheetAt(int sheetIndex) {
         this.sheet = workbook.getSheetAt(sheetIndex);
@@ -96,6 +67,7 @@ public class XlsExcelFile extends Excel {
     public void save() {
         try {
             FileOutputStream stream = new FileOutputStream(filePath);
+            HSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
             workbook.write(stream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,31 +81,9 @@ public class XlsExcelFile extends Excel {
      * @param rowIdx cell row index
      * @return row at given row index.
      */
+    @Override
     public HSSFRow getRow(int rowIdx) {
         return getSheet().getRow(rowIdx);
-    }
-
-    /**
-     * Find the next free cell-column index for a given row index.
-     * Please note that the first index value is represented by the value 0.
-     *
-     * @param rowIdx cell row index.
-     * @param startColIdx cell column index we want to start our search.
-     * @return free column index.
-     */
-    @Override
-    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
-        int colIdx = startColIdx;
-        HSSFCell content;
-        do {
-            HSSFRow row = getRow(rowIdx);
-            if (row == null) break;
-            content = row.getCell(colIdx);
-
-            colIdx++;
-        } while (content != null);
-        if (colIdx == startColIdx) return startColIdx;
-        return colIdx - 1;
     }
 
     /**
@@ -147,37 +97,22 @@ public class XlsExcelFile extends Excel {
      * @return string representation of target cell.
      */
     @Override
-    public String getCellValue(int rowIdx, int columnIdx) {
-        String cellContent = "";
+    public CellContent getCellValue(int rowIdx, int columnIdx) {
         HSSFRow row = getRow(rowIdx);
         if (row == null) return null;
 
         HSSFCell cell = getRow(rowIdx).getCell(columnIdx);
         if (cell == null) return null;
-
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
-                cellContent = String.valueOf(cell.getStringCellValue());
-                break;
-            case Cell.CELL_TYPE_NUMERIC:
-                cellContent = cell.getStringCellValue();
-                if (cellContent.contains(".")) {
-                    cellContent = String.valueOf(cell.getNumericCellValue());
-                }
-                break;
-            case Cell.CELL_TYPE_BOOLEAN:
-                cellContent = String.valueOf(cell.getBooleanCellValue());
-                break;
-            default:
-        }
-        return cellContent;
+        
+        return new CellContent(cell);
     }
 
     /**
      * Get the currently loaded sheet of the loaded excel file.
      *
-     * @retur the current excel sheet
+     * @return the current excel sheet
      */
+    @Override
     public HSSFSheet getSheet() {
         return sheet;
     }
