@@ -31,8 +31,6 @@ public class Consolidator extends FileReader {
         this.cellMappingBlocks = new ArrayList<>();
 
         readFile(mappingFilePath);
-        
-        int mappingIdx = 0;
         for (CellMappingBlock cellMappingBlock: cellMappingBlocks) {
             updateSheetIndices(cellMappingBlock);
 	        if (Properties.runNormalMode()) {
@@ -41,7 +39,6 @@ public class Consolidator extends FileReader {
 	            Logger.println("Running in debug mode");
 	            runDebugMode(cellMappingBlock);
 	        }
-	        mappingIdx++;
         }
     }
     
@@ -95,13 +92,27 @@ public class Consolidator extends FileReader {
     private void copyFromCellsToToCells(CellMappingBlock cellMappingBlock) {
     	ArrayList<CellMapping> sublistCellMappings = cellMappingBlock.getMappings();
         Excel outExcel = outExcels.get(cellMappingBlock.toExcelIdx);
+
+        Logger.println("Using from sheet Index " + cellMappingBlock.fromSheetIdx + " and TO sheet index: " + cellMappingBlock.toSheetIdx + " for performing cell lookups in Excel TO " + cellMappingBlock.toExcelIdx + ".");
+        if(cellMappingBlock.requireNonEmptySource && inExcel.hasEmptySourceCells(sublistCellMappings)) {
+			Logger.println("FROM Excel contained empty cells for the given mapping. Did not copy anything for current mapping block.");
+        	return;
+        }
+        int freeToColumn = 0;
+        if(cellMappingBlock.insertAsColumn) {
+        	freeToColumn = outExcel.findEmptyColumnForMappingBlock(sublistCellMappings);
+        }
         for (CellMapping cellMapping : sublistCellMappings) {
             CellContent fromValue = processCellMapping(cellMapping);
             int toColumnIndex = cellMapping.getToColumnIndex();
 
             // TODO: Do this just once in the very beginning to determine the target column
             if (cellMapping.usesOffset()) {
-                toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex());
+            	if(cellMappingBlock.insertAsColumn) {
+            		toColumnIndex = freeToColumn;
+            	} else {
+            		toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex());
+            	}
             }
             outExcel.writeCell(fromValue, cellMapping.getToRowIndex(), toColumnIndex);
         }
@@ -120,12 +131,23 @@ public class Consolidator extends FileReader {
             int toExcelIdx = Integer.parseInt(row[1]);
             int fromSheetIdx = Integer.parseInt(row[2]);
             int toSheetIdx = Integer.parseInt(row[3]);
-            Logger.println("Using from sheet Index " + fromSheetIdx + " and TO sheet index: " + toSheetIdx + " for performing cell lookups in Excel TO " + toExcelIdx + ".");
-
-        	CellMappingBlock block = new CellMappingBlock(toExcelIdx, fromSheetIdx, toSheetIdx);
-        	cellMappingBlocks.add(block);
+        	cellMappingBlocks.add(new CellMappingBlock(toExcelIdx, fromSheetIdx, toSheetIdx));
         } else {
         	CellMappingBlock currentBlock = cellMappingBlocks.get(cellMappingBlocks.size()-1);
+        	
+        	// config option for current cell mapping block
+        	if(row[0].equals("c")) {
+        		if(row[1].equals("insertAsColumn")) {
+        			currentBlock.insertAsColumn = true;
+        			return;
+        		}
+        		if(row[1].equals("requireNonEmptySource")) {
+        			currentBlock.requireNonEmptySource = true;
+        			return;
+        		}
+        		return;
+        	}
+        	
             // there is a default value specified or date format
             if (!lastRowItemIsNumeric(row)) {
             	if(row.length > 5) {
