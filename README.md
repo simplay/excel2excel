@@ -109,6 +109,7 @@ Currently, there are four different formats supported.
 
 ```
 m ToExcelIndex FromSheetIndex ToSheetIndex
+c configSwitch
 ax ay bx by
 ax ay bx by rep
 ax ay bx by rep mappingId
@@ -125,6 +126,7 @@ Every line starting by `m` starts a new mapping to the specified TO excel file.
 + `ToExcelIndex`: Which TO excel file that should be used. The first file has the index 0.
 + `FromSheetIndex`: The sheet number in the FROM excel file that should be used to lookup cells. The first sheet has the index 0.
 + `ToSheetIndex`: The sheet number in the TO excel file that should be used to lookup cells. The first sheet has the index 0.
++ `configSwitch`: Config switch to be turned on for current mapping block.
 + `ax`: The row cell index of a FROM excel file. Starts counting at zero. The excel index 1 or A respectively gets mapped to the index 0.
 + `ay`: The column cell index of a FROM excel file. The excel index 1 or A respectively gets mapped to the index 0.
 + `bx`: The row cell index of a TO excel file. The excel index 1 or A respectively gets mapped to the index 0.
@@ -134,22 +136,35 @@ Every line starting by `m` starts a new mapping to the specified TO excel file.
 + `dateFormat`: This is a Java date format string used to convert the source cell contents to the specified format.
 + `default`: Instead of using a value from a FROM excel file, we use a default / constant and replicate it in the TO excel file. Such defaults represent a certain String. Strings in a cellMapping file are enclosed by quotes (.e. "some_fancy_string"). 
 
+### Config Switches
+
+Each mapping block starting with `m` may contain any number of lines starting with `c` indicating a config switch that is turned on for that specific block.
+
+#### List of Config Switches
++ `insertAsColumn`: Will insert all the mappings in that block that are set to search for the first free cell in their destination row (i.e. `rep=1`) into the first column that is free for all of them instead.
++ `requireNonEmpty`: Assures that all of the mappings in that block are only executed if all of their source cells aren't empty.
+
 
 ### Example
 
 + Use the 1st sheet in the FROM excel file and the 3rd sheet in the 1st TO excel file.
++ This block of mappings will only be executed if all of the source cells aren't empty.
 + Cascade the string foobar in the first row in the 1st TO excel file
-+ take the cell in the 2nd row and 2nd column in the FROM file (which is supposed to be a symbolic scale value) and translate it to a numeric value according to the first scale (row 0 in `scale_values.txt`). The translated numeric value is written to cell at the 4th row and 2nd column in the 1st TO excel file. 
-+ take the cell in the 3rd row and 3rd column convert its contents to a date in the  format dd.MM.yyyy and write the result of that conversion into the 4th row and 3rd column in the 1st TO file.
-+ Copy the cell at (3,1) on sheet 2 in the FROM file to the cell (1,0) on sheet 3 in the 2nd TO excel.
++ take the cell in the 2nd row and 2nd column in the FROM file (which is supposed to be a symbolic scale value) and translate it to a numeric value according to the first scale (row 0 in `scale_values.txt`). The translated numeric value is written to cell at the 4th row and 2nd column in the 1st TO excel file.
++ a new mapping block is opened with the 2nd sheet on the 2nd TO excel
++ this block of mappings will fill all of the mappings that search for a free cell into the same column and makes sure that column is free for all of them
++ Copy the cell at (3,1) on sheet 2 in the FROM file to the first free cell on the 2nd row on sheet 3 in the 2nd TO excel. 
++ Take the numeric value of the cell at (3,2) on sheet 2 in the FROM file convert it to a date in the format dd.MM.yyyy and write the result of that conversion into the first free cell on row 3 on sheet 3 in the 2nd TO file.
 
 ```
 m 0 0 2
+c requireNonEmptySource
 0 1 1 "foobar"
-3 1 1 1 1 0
-3 2 2 2 1 "dd.MM.yyyy"
+1 1 3 1 1 0
 m 1 1 2
-3 1 1 1 0
+c insertAsColumn
+3 1 1 0 1
+3 2 2 0 1 "dd.MM.yyyy"
 
 ```
 

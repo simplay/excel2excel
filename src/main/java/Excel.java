@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -37,6 +39,19 @@ public abstract class Excel {
             content = new CellContent(cell);
         } while(!content.isBlank());
         
+        return colIdx;
+    }
+
+    /**
+     * Find the next free destination column index for the given list of mappings.
+     */
+    public int findEmptyColumnForMappingBlock(ArrayList<CellMapping> cellMappings) {
+        int colIdx = 0;
+        for(CellMapping mapping: cellMappings) {
+        	if(mapping.usesOffset()) {
+        		colIdx = Math.max(findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex()), colIdx);
+        	}
+        }
         return colIdx;
     }
 
@@ -120,6 +135,20 @@ public abstract class Excel {
     public void setLookupSheetIndex(int sheetIndex) {
         this.sheetIndex = sheetIndex;
         setSheetAt(sheetIndex);
+    }
+
+    public boolean hasEmptySourceCells(ArrayList<CellMapping> cellMappings) {
+    	for(CellMapping mapping: cellMappings) {
+    		//Don't check static fields without a source cell
+    		if(mapping.hasDefaultValue() && !mapping.hasDateFormatConversion()) {
+    			continue;
+    		}
+    		CellContent content = getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
+    		if(content.isBlank()) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     protected abstract void setSheetAt(int sheetIndex);
