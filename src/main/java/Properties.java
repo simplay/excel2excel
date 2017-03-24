@@ -25,6 +25,8 @@ public class Properties extends FileReader {
     private static Properties instance;
     private String[] userParameters;
     private HashMap<String, String> properties;
+    
+    private boolean abortRequested;
 
     public static Properties getInstance(String[] userParameters) {
         if (instance == null) {
@@ -71,6 +73,7 @@ public class Properties extends FileReader {
     public Properties(String[] userParameters) {
         this.userParameters = userParameters;
         this.properties = new HashMap<String, String>();
+        this.abortRequested = false;
         readFile(getConfigPath());
     }
 
@@ -174,6 +177,19 @@ public class Properties extends FileReader {
 
     public boolean hasLoadedProperties() {
         return !properties.isEmpty();
+    }
+
+    public static boolean showErrorDialogue() {
+    	String property = getInstance().properties.get("show_error_dialogue");
+        return property != null && property.equals("1");
+    }
+
+    public static boolean abortRequested() {
+        return getInstance().abortRequested;
+    }
+
+    public static void requestAbort() {
+        getInstance().abortRequested = true;
     }
 
     @Override

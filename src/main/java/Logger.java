@@ -7,6 +7,8 @@ import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 /**
  * A logger is responsible for printing the runtime state of a given execution.
  * It prints a given status report file (to have some reconstructive information).
@@ -81,6 +83,13 @@ public class Logger {
     public static void printError(String msg) {
         if (getInstance().mayPrint()) System.err.println(msg);
         getInstance().writeBuffer(msg);
+        
+        if(Properties.showErrorDialogue()) {
+        	int confirmDialogueState = JOptionPane.showConfirmDialog(null, "An error has occured: \"" + msg + "\"\n\nDo you wish to continue anyways?", "Error", JOptionPane.YES_NO_OPTION);
+        	if(confirmDialogueState == JOptionPane.NO_OPTION) {
+        		Properties.requestAbort();
+        	}
+        }
     }
 
     /**

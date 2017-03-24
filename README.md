@@ -78,6 +78,7 @@ The following legend describes a list of all expected `<CONFIG_NAME>` entries an
 
 + `debug_mod`: Is either `0` (run debug mode) or `1` (run normal mode). Running the debug mode will basically print the content of the input excel file. Running the normal mode will start the GUI application as expected.
 + `use logger`: In case this option is set to `1`, then logger statements are streamed to the terminal. Otherwise it is muted.
++ `show_error_dialogue`: In case this option is set to `1`the application will display a dialogue every time the application logs an error which lets the user abort the mapping operation
 + `base_from_lookup_path`: Starting directory displayed when running the gui and searching for a FROM excel file. Paths are enclosed by quotes (to handle white spaces in paths)
 + `base_to_lookup_path`: Starting directory displayed when running the gui and searching for a TO excel file. Paths are enclosed by quotes (to handle white spaces in paths)
 
@@ -87,6 +88,7 @@ In the following an eample that:
 
 + Does not run the program in the debug mode
 + Does not print logging statements in the terminal
++ Displays an error dialogue on logged error messages
 + Uses the following base paths:
  + FROM base path: `foobar/`
  + TO base path: `barbaz/`
@@ -95,6 +97,7 @@ In the following an eample that:
 
 debug_mode: 0
 use_logger: 0
+show_error_dialogue: 1
 use_base_paths: 1
 base_from_lookup_path: "foobar/"
 base_to_lookup_path: "barbaz/"
@@ -109,6 +112,7 @@ Currently, there are four different formats supported.
 
 ```
 m ToExcelIndex FromSheetIndex ToSheetIndex
+n mappingName
 c configSwitch
 ax ay bx by
 ax ay bx by rep
@@ -126,6 +130,7 @@ Every line starting by `m` starts a new mapping to the specified TO excel file.
 + `ToExcelIndex`: Which TO excel file that should be used. The first file has the index 0.
 + `FromSheetIndex`: The sheet number in the FROM excel file that should be used to lookup cells. The first sheet has the index 0.
 + `ToSheetIndex`: The sheet number in the TO excel file that should be used to lookup cells. The first sheet has the index 0.
++ `mappingName`: user defined name for the mapping that will be displayed on error dialogues, may contain whitespace characters.
 + `configSwitch`: Config switch to be turned on for current mapping block.
 + `ax`: The row cell index of a FROM excel file. Starts counting at zero. The excel index 1 or A respectively gets mapped to the index 0.
 + `ay`: The column cell index of a FROM excel file. The excel index 1 or A respectively gets mapped to the index 0.
