@@ -112,7 +112,7 @@ Currently, there are four different formats supported.
 
 ```
 m ToExcelIndex FromSheetIndex ToSheetIndex
-n name
+n mappingName
 c configSwitch
 ax ay bx by
 ax ay bx by rep
@@ -130,7 +130,7 @@ Every line starting by `m` starts a new mapping to the specified TO excel file.
 + `ToExcelIndex`: Which TO excel file that should be used. The first file has the index 0.
 + `FromSheetIndex`: The sheet number in the FROM excel file that should be used to lookup cells. The first sheet has the index 0.
 + `ToSheetIndex`: The sheet number in the TO excel file that should be used to lookup cells. The first sheet has the index 0.
-+ `name`: user defined name for the mapping that will be displayed on error dialogues, may contain whitespace characters.
++ `mappingName`: user defined name for the mapping that will be displayed on error dialogues, may contain whitespace characters.
 + `configSwitch`: Config switch to be turned on for current mapping block.
 + `ax`: The row cell index of a FROM excel file. Starts counting at zero. The excel index 1 or A respectively gets mapped to the index 0.
 + `ay`: The column cell index of a FROM excel file. The excel index 1 or A respectively gets mapped to the index 0.

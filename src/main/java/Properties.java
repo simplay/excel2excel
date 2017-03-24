@@ -180,8 +180,8 @@ public class Properties extends FileReader {
     }
 
     public static boolean showErrorDialogue() {
-    	String prop = getInstance().properties.get("show_error_dialogue");
-        return prop != null && prop.equals("1");
+    	String property = getInstance().properties.get("show_error_dialogue");
+        return property != null && property.equals("1");
     }
 
     public static boolean abortRequested() {

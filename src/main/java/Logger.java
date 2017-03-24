@@ -77,7 +77,6 @@ public class Logger {
 
     /**
      * Prints an error string in the console if allowed.
-     * Returns true if the user requested to exit the application
      *
      * @param msg given error message.
      */
@@ -86,8 +85,8 @@ public class Logger {
         getInstance().writeBuffer(msg);
         
         if(Properties.showErrorDialogue()) {
-        	int return_code = JOptionPane.showConfirmDialog(null, "An error has occured: \"" + msg + "\"\n\nDo you wish to continue anyways?", "Error", JOptionPane.YES_NO_OPTION);
-        	if(return_code == JOptionPane.NO_OPTION) {
+        	int confirmDialogueState = JOptionPane.showConfirmDialog(null, "An error has occured: \"" + msg + "\"\n\nDo you wish to continue anyways?", "Error", JOptionPane.YES_NO_OPTION);
+        	if(confirmDialogueState == JOptionPane.NO_OPTION) {
         		Properties.requestAbort();
         	}
         }
