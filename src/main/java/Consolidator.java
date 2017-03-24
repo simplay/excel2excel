@@ -39,6 +39,9 @@ public class Consolidator extends FileReader {
 	            Logger.println("Running in debug mode");
 	            runDebugMode(cellMappingBlock);
 	        }
+	        if(Properties.abortRequested()) {
+	        	break;
+	        }
         }
     }
     
@@ -95,7 +98,7 @@ public class Consolidator extends FileReader {
 
         Logger.println("Using from sheet Index " + cellMappingBlock.fromSheetIdx + " and TO sheet index: " + cellMappingBlock.toSheetIdx + " for performing cell lookups in Excel TO " + cellMappingBlock.toExcelIdx + ".");
         if(cellMappingBlock.requireNonEmptySource && inExcel.hasEmptySourceCells(sublistCellMappings)) {
-			Logger.println("FROM Excel contained empty cells for the given mapping. Did not copy anything for current mapping block.");
+			Logger.printError("FROM Excel contained empty cells for the mapping \"" + cellMappingBlock.name + "\". Did not copy anything for current mapping block.");
         	return;
         }
         int freeToColumn = 0;
@@ -134,6 +137,12 @@ public class Consolidator extends FileReader {
         	cellMappingBlocks.add(new CellMappingBlock(toExcelIdx, fromSheetIdx, toSheetIdx));
         } else {
         	CellMappingBlock currentBlock = cellMappingBlocks.get(cellMappingBlocks.size()-1);
+        	
+        	// name for current cell mapping block
+        	if(row[0].equals("n")) {
+        		currentBlock.name = line.substring(row[0].length()+1);
+        		return;
+        	}
         	
         	// config option for current cell mapping block
         	if(row[0].equals("c")) {

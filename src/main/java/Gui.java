@@ -125,6 +125,11 @@ public class Gui extends Frame {
                     Logger.println(" => Excel files read.");
                     Logger.println("Copying content from FROM excel file to TO files ...");
                     new Consolidator(Properties.getMappingFilePath(), fromExcel, toExcels);
+                    if(Properties.abortRequested()) {
+                        Logger.println(" => User requested to abort copy operations.");
+                        Logger.println("Excel2Excel finished without modifying any files.");
+                    	return;
+                    }
                     Logger.println(" => Content copied.");
 
                     for (int k = 0; k < 2; k++) {
