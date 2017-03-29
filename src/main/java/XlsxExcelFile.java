@@ -4,6 +4,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 
+import java.nio.file.*;
 import java.io.*;
 
 /**
@@ -16,7 +17,7 @@ import java.io.*;
 public class XlsxExcelFile extends Excel {
     protected XSSFSheet sheet;
     protected XSSFWorkbook workbook;
-    protected String filePath;
+    protected Path filePath;
 
     /**
      * Load a excel file by its path and sheet nr.
@@ -26,7 +27,7 @@ public class XlsxExcelFile extends Excel {
      * @param sheetNr relevant sheet inside excel file that should be loaded.
      */
     public XlsxExcelFile(String filePath, int sheetNr) {
-        this.filePath = filePath;
+        this.filePath = Paths.get(filePath);
         workbook = loadWorkbook();
         setSheetAt(sheetNr);
     }
@@ -34,7 +35,7 @@ public class XlsxExcelFile extends Excel {
     protected XSSFWorkbook loadWorkbook() {
         XSSFWorkbook workbook = null;
         try {
-            FileInputStream file = new FileInputStream(new File(filePath));
+            InputStream file = Files.newInputStream(filePath, StandardOpenOption.READ);
             workbook = new XSSFWorkbook(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -68,7 +69,7 @@ public class XlsxExcelFile extends Excel {
     @Override
     public void save() {
         try {
-            FileOutputStream stream = new FileOutputStream(filePath);
+            OutputStream stream = Files.newOutputStream(filePath, StandardOpenOption.WRITE);
             XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
             workbook.write(stream);
         } catch (IOException e) {
@@ -112,7 +113,7 @@ public class XlsxExcelFile extends Excel {
     /**
      * Get the currently loaded sheet of the loaded excel file.
      *
-     * @retur the current excel sheet
+     * @return the current excel sheet
      */
     @Override
     public XSSFSheet getSheet() {

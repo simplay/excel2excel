@@ -91,6 +91,12 @@ public class Logger {
         	}
         }
     }
+    
+    public static void printException(Exception e) {
+    	printError(e.getClass().getSimpleName() + ": " + e.getMessage());
+        if (getInstance().mayPrint()) e.printStackTrace();
+        getInstance().writeBuffer(e.getStackTrace().toString());
+    }
 
     /**
      * Prints a formatted path error.

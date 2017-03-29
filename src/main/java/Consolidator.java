@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,9 +61,13 @@ public class Consolidator extends FileReader {
         
         if (!cellMapping.hasDefaultValue()) {
             fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
-            if (cellMapping.hasTranslation() && fromValue.type == CellType.STRING) {
-            	fromValue.type = CellType.NUMERIC;
-                fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
+            if (cellMapping.hasTranslation()) {
+            	if(fromValue.type == CellType.STRING) {
+            		fromValue.type = CellType.NUMERIC;
+                	fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
+            	} else if(fromValue.type == CellType.NUMERIC) {
+            		fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), new DecimalFormat("0.######").format(fromValue.numeric));
+            	}
             }
         }
         
@@ -103,7 +108,7 @@ public class Consolidator extends FileReader {
         }
         int freeToColumn = 0;
         if(cellMappingBlock.insertAsColumn) {
-        	freeToColumn = outExcel.findEmptyColumnForMappingBlock(sublistCellMappings);
+        	freeToColumn = outExcel.findEmptyColumnForMappingBlock(cellMappingBlock);
         }
         for (CellMapping cellMapping : sublistCellMappings) {
             CellContent fromValue = processCellMapping(cellMapping);
@@ -114,7 +119,7 @@ public class Consolidator extends FileReader {
             	if(cellMappingBlock.insertAsColumn) {
             		toColumnIndex = freeToColumn;
             	} else {
-            		toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex());
+            		toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex(), cellMappingBlock.treatFormulaAsBlank);
             	}
             }
             outExcel.writeCell(fromValue, cellMapping.getToRowIndex(), toColumnIndex);
@@ -152,6 +157,10 @@ public class Consolidator extends FileReader {
         		}
         		if(row[1].equals("requireNonEmptySource")) {
         			currentBlock.requireNonEmptySource = true;
+        			return;
+        		}
+        		if(row[1].equals("treatFormulaAsBlank")) {
+        			currentBlock.treatFormulaAsBlank = true;
         			return;
         		}
         		return;

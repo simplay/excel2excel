@@ -19,7 +19,7 @@ public class XlsmExcelFile extends XlsxExcelFile {
         XSSFWorkbook workbook = null;
         try {
             workbook = new XSSFWorkbook(
-                    OPCPackage.open(filePath)
+                    OPCPackage.open(filePath.toString())
             );
 
         } catch (IOException e) {

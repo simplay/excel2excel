@@ -55,8 +55,8 @@ public class CellContent {
 		}
 	}
 	
-	public boolean isBlank() {
-		if(wasFormula) {
+	public boolean isBlank(boolean treatFormulaAsBlank) {
+		if(!treatFormulaAsBlank && wasFormula) {
 			return false;
 		}
 		
@@ -74,6 +74,10 @@ public class CellContent {
 			default:
 				return false;
 		}
+	}
+	
+	public boolean isBlank() {
+		return isBlank(false);
 	}
 	
 	public String toString() {
