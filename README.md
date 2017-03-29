@@ -148,6 +148,7 @@ Each mapping block starting with `m` may contain any number of lines starting wi
 #### List of Config Switches
 + `insertAsColumn`: Will insert all the mappings in that block that are set to search for the first free cell in their destination row (i.e. `rep=1`) into the first column that is free for all of them instead.
 + `requireNonEmpty`: Assures that all of the mappings in that block are only executed if all of their source cells aren't empty.
++ `treatFormulaAsBlank`: Treats formula cells in destination file as blank cells.
 
 
 ### Example
