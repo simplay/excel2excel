@@ -55,6 +55,11 @@ public class CellContent {
 		}
 	}
 	
+	public CellContent(double content) {
+		type = CellType.NUMERIC;
+		numeric = content;
+	}
+	
 	public boolean isBlank(boolean treatFormulaAsBlank) {
 		if(!treatFormulaAsBlank && wasFormula) {
 			return false;
@@ -89,6 +94,7 @@ public class CellContent {
 				return String.valueOf(bool);
 				
 			case NUMERIC:
+				//FIXME: eventually we should probably handle numeric types with their cell formatting
 				return String.valueOf(numeric);
 				
 			case STRING:

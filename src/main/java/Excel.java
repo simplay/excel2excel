@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -112,6 +113,11 @@ public abstract class Excel {
             Logger.printError("Cell at column " + columnIdx + " does yet not exist. Creating new cell...");
             cell = row.createCell(columnIdx);
         }
+        
+    	if(content == null) {
+    		cell.setCellType(CellType.BLANK);
+    		return;
+    	}
         
         switch(content.type) {
     		case BLANK:

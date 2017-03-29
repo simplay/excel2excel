@@ -64,9 +64,10 @@ public class Consolidator extends FileReader {
             if (cellMapping.hasTranslation()) {
             	if(fromValue.type == CellType.STRING) {
             		fromValue.type = CellType.NUMERIC;
-                	fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
+                	fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
             	} else if(fromValue.type == CellType.NUMERIC) {
-            		fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), new DecimalFormat("0.######").format(fromValue.numeric));
+            		//FIXME: currently a bit of a hack, eventually we should probably handle numeric types with their cell formatting
+            		fromValue = Translator.lookup(cellMapping.getTranslationRow(), new DecimalFormat("0.######").format(fromValue.numeric));
             	}
             }
         }

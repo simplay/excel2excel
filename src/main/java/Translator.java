@@ -45,7 +45,7 @@ public class Translator extends FileReader{
      * @param toBeTranslated
      * @return
      */
-    public static double lookup(int lookupRow, String toBeTranslated) {
+    public static CellContent lookup(int lookupRow, String toBeTranslated) {
         Scale scale = getInstance().getScales().get(lookupRow);
 
         // normalize to be translated string
@@ -105,7 +105,7 @@ public class Translator extends FileReader{
         Scale scale = new Scale();
         for (int k = 0; k < itemCount; k++) {
             String label = row[k];
-            int value = Integer.parseInt(row[k + itemCount]);
+            CellContent value = new CellContent(row[k + itemCount]);
             scale.appendItem(label, value);
         }
         scales.add(scale);
