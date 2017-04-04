@@ -62,13 +62,7 @@ public class Consolidator extends FileReader {
         if (!cellMapping.hasDefaultValue()) {
             fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
             if (cellMapping.hasTranslation()) {
-            	if(fromValue.type == CellType.STRING) {
-            		fromValue.type = CellType.NUMERIC;
-                	fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
-            	} else if(fromValue.type == CellType.NUMERIC) {
-            		//FIXME: currently a bit of a hack, eventually we should probably handle numeric types with their cell formatting
-            		fromValue = Translator.lookup(cellMapping.getTranslationRow(), new DecimalFormat("0.######").format(fromValue.numeric));
-            	}
+            	fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
             }
         }
         
@@ -104,7 +98,7 @@ public class Consolidator extends FileReader {
 
         Logger.println("Using from sheet Index " + cellMappingBlock.fromSheetIdx + " and TO sheet index: " + cellMappingBlock.toSheetIdx + " for performing cell lookups in Excel TO " + cellMappingBlock.toExcelIdx + ".");
         if(cellMappingBlock.requireNonEmptySource && inExcel.hasEmptySourceCells(sublistCellMappings)) {
-			Logger.printError("FROM Excel contained empty cells for the mapping \"" + cellMappingBlock.name + "\". Did not copy anything for current mapping block.");
+        	Logger.printError("FROM Excel contained empty cells for the mapping \"" + cellMappingBlock.name + "\". Did not copy anything for current mapping block.", cellMappingBlock.autoSkipOnError);
         	return;
         }
         int freeToColumn = 0;
@@ -162,6 +156,10 @@ public class Consolidator extends FileReader {
         		}
         		if(row[1].equals("treatFormulaAsBlank")) {
         			currentBlock.treatFormulaAsBlank = true;
+        			return;
+        		}
+        		if(row[1].equals("autoSkipOnError")) {
+        			currentBlock.autoSkipOnError = true;
         			return;
         		}
         		return;

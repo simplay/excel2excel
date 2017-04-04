@@ -156,6 +156,8 @@ public abstract class Excel {
     		CellContent content = getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
     		if(content.isBlank()) {
     			return true;
+    		} else if(mapping.hasTranslation()) {
+    			return Translator.lookup(mapping.getTranslationRow(), content).isBlank();
     		}
     	}
     	return false;

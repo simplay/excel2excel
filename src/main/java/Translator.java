@@ -1,4 +1,7 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import org.apache.poi.ss.usermodel.CellType;
 
 /**
  * A Translator offers to translate symbolic values to numeric values
@@ -51,6 +54,17 @@ public class Translator extends FileReader{
         // normalize to be translated string
         String normalizedString = normalizedInputTranslation(toBeTranslated);
         return scale.getValueByLabel(normalizedString);
+    }
+
+    public static CellContent lookup(int lookupRow, CellContent fromValue) {
+    	if(fromValue.type == CellType.STRING) {
+    		fromValue.type = CellType.NUMERIC;
+        	fromValue = Translator.lookup(lookupRow, fromValue.string);
+    	} else if(fromValue.type == CellType.NUMERIC) {
+    		//FIXME: currently a bit of a hack, eventually we should probably handle numeric types with their cell formatting
+    		fromValue = Translator.lookup(lookupRow, new DecimalFormat("0.######").format(fromValue.numeric));
+    	}
+    	return fromValue;
     }
 
     /**

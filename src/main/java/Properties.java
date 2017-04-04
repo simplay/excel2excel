@@ -1,4 +1,3 @@
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -109,7 +108,6 @@ public class Properties extends FileReader {
     public static String getToExcelFilePath2() {
         return getInstance().getPathAt(2);
     }
-
 
     public String getPathAt(int idx) {
         return Paths.get(Properties.buildUTF8String(userParameters[idx])).toString();

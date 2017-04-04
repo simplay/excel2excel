@@ -80,16 +80,20 @@ public class Logger {
      *
      * @param msg given error message.
      */
-    public static void printError(String msg) {
+    public static void printError(String msg, boolean surpressDialogue) {
         if (getInstance().mayPrint()) System.err.println(msg);
         getInstance().writeBuffer(msg);
         
-        if(Properties.showErrorDialogue()) {
+        if(!surpressDialogue && Properties.showErrorDialogue()) {
         	int confirmDialogueState = JOptionPane.showConfirmDialog(null, "An error has occured: \"" + msg + "\"\n\nDo you wish to continue anyways?", "Error", JOptionPane.YES_NO_OPTION);
         	if(confirmDialogueState == JOptionPane.NO_OPTION) {
         		Properties.requestAbort();
         	}
         }
+    }
+    
+    public static void printError(String msg) {
+    	printError(msg, false);
     }
     
     public static void printException(Exception e) {

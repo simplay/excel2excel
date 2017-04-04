@@ -9,6 +9,7 @@ public class CellMappingBlock {
     public boolean insertAsColumn;
     public boolean requireNonEmptySource;
     public boolean treatFormulaAsBlank;
+    public boolean autoSkipOnError;
     
     public CellMappingBlock(int toExcelIdx, int fromSheetIdx, int toSheetIdx) {
     	this.name = "FROM Sheet " + fromSheetIdx + " TO Sheet " + toSheetIdx + " on TO Excel " + toExcelIdx;
@@ -19,6 +20,7 @@ public class CellMappingBlock {
     	this.insertAsColumn = false;
     	this.requireNonEmptySource = false;
     	this.treatFormulaAsBlank = false;
+    	this.autoSkipOnError = false;
     }
     
     public void addMapping(CellMapping cellMapping) {
