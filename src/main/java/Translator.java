@@ -62,6 +62,8 @@ public class Translator extends FileReader{
         	fromValue = Translator.lookup(lookupRow, fromValue.string);
     	} else if(fromValue.type == CellType.NUMERIC) {
     		//FIXME: currently a bit of a hack, eventually we should probably handle numeric types with their cell formatting
+    		//DecimalFormat rounds the numeric to the number of #, so it will determine some source values equal that shouldn't have been
+    		//it makes more sense to treat the numerics as they appear in the Excel file which is determined by the cell's formatting.
     		fromValue = Translator.lookup(lookupRow, new DecimalFormat("0.######").format(fromValue.numeric));
     	}
     	return fromValue;

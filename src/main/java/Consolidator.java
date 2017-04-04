@@ -149,16 +149,13 @@ public class Consolidator extends FileReader {
         		if(row[1].equals("insertAsColumn")) {
         			currentBlock.insertAsColumn = true;
         			return;
-        		}
-        		if(row[1].equals("requireNonEmptySource")) {
+        		} else if(row[1].equals("requireNonEmptySource")) {
         			currentBlock.requireNonEmptySource = true;
         			return;
-        		}
-        		if(row[1].equals("treatFormulaAsBlank")) {
+        		} else if(row[1].equals("treatFormulaAsBlank")) {
         			currentBlock.treatFormulaAsBlank = true;
         			return;
-        		}
-        		if(row[1].equals("autoSkipOnError")) {
+        		} else if(row[1].equals("autoSkipOnError")) {
         			currentBlock.autoSkipOnError = true;
         			return;
         		}
