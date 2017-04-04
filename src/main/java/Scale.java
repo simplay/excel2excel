@@ -19,7 +19,7 @@ public class Scale {
 
     // the values represent the numerical value of a scale.
     // The k-th value element belongs to the k-th label element
-    private ArrayList<Integer> values;
+    private ArrayList<CellContent> values;
 
     /**
      * Form an empty scale which consists of a series of
@@ -27,7 +27,7 @@ public class Scale {
      */
     public Scale() {
         labels = new ArrayList<String>();
-        values = new ArrayList<Integer>();
+        values = new ArrayList<CellContent>();
     }
 
     /**
@@ -37,7 +37,7 @@ public class Scale {
      * @param label symbolic representation of scale values.
      * @param value numeric scale values.
      */
-    public void appendItem(String label, int value) {
+    public void appendItem(String label, CellContent value) {
         if (!labels.contains(label)) {
             labels.add(label);
             values.add(value);
@@ -53,7 +53,7 @@ public class Scale {
      * @return the numeric scale values. -1 indicates that no such symbolic
      *  scale representation has been found.
      */
-    public int getValueByLabel(String queryLabel) {
+    public CellContent getValueByLabel(String queryLabel) {
         int idx = 0;
         for (String label : labels) {
             if (label.equals(queryLabel)) {
@@ -61,6 +61,6 @@ public class Scale {
             }
             idx++;
         }
-        return -1;
+        return null;
     }
 }

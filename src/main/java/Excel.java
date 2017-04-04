@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -24,7 +25,7 @@ public abstract class Excel {
      * @param startColIdx cell column index we want to start our search.
      * @return free column index.
      */
-    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
+    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx, boolean treatFormulaAsBlank) {
         int colIdx = startColIdx;
         Cell cell;
         CellContent content;
@@ -37,19 +38,23 @@ public abstract class Excel {
             colIdx++;
             cell = row.getCell(colIdx);
             content = new CellContent(cell);
-        } while(!content.isBlank());
+        } while(!content.isBlank(treatFormulaAsBlank));
         
         return colIdx;
+    }
+    
+    public int findEmptyCellColumnAtFixedRow(int rowIdx, int startColIdx) {
+    	return findEmptyCellColumnAtFixedRow(rowIdx, startColIdx, false);
     }
 
     /**
      * Find the next free destination column index for the given list of mappings.
      */
-    public int findEmptyColumnForMappingBlock(ArrayList<CellMapping> cellMappings) {
+    public int findEmptyColumnForMappingBlock(CellMappingBlock cellMappingBlock) {
         int colIdx = 0;
-        for(CellMapping mapping: cellMappings) {
+        for(CellMapping mapping: cellMappingBlock.getMappings()) {
         	if(mapping.usesOffset()) {
-        		colIdx = Math.max(findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex()), colIdx);
+        		colIdx = Math.max(findEmptyCellColumnAtFixedRow(mapping.getToRowIndex(), mapping.getToColumnIndex(), cellMappingBlock.treatFormulaAsBlank), colIdx);
         	}
         }
         return colIdx;
@@ -109,7 +114,11 @@ public abstract class Excel {
             cell = row.createCell(columnIdx);
         }
         
-		cell.setCellType(content.type);
+    	if(content == null) {
+    		cell.setCellType(CellType.BLANK);
+    		return;
+    	}
+        
         switch(content.type) {
     		case BLANK:
     			break;
@@ -130,6 +139,7 @@ public abstract class Excel {
         		Logger.printError("Cell at column " + columnIdx + " could not be written. Invalid cell content given.");
         		break;
         }
+		cell.setCellType(content.type);
     }
 
     public void setLookupSheetIndex(int sheetIndex) {
@@ -146,6 +156,8 @@ public abstract class Excel {
     		CellContent content = getCellValue(mapping.getFromRowIndex(), mapping.getFromColumnIndex());
     		if(content.isBlank()) {
     			return true;
+    		} else if(mapping.hasTranslation()) {
+    			return Translator.lookup(mapping.getTranslationRow(), content).isBlank();
     		}
     	}
     	return false;

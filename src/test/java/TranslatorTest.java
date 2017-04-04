@@ -27,18 +27,18 @@ public class TranslatorTest {
 
     @Test
     public void testLookup() {
-        assertEquals(1, (int) Translator.lookup(0, "R"));
-        assertEquals(2, (int) Translator.lookup(0, "G"));
-        assertEquals(3, (int) Translator.lookup(0, "B"));
-        assertEquals(10, (int) Translator.lookup(1, "X"));
-        assertEquals(11, (int) Translator.lookup(1, "Y"));
-        assertEquals(12, (int) Translator.lookup(1, "Z"));
-        assertEquals(23, (int) Translator.lookup(2, "U"));
-        assertEquals(34, (int) Translator.lookup(2, "V"));
-        assertEquals(45, (int) Translator.lookup(2, "W"));
+        assertEquals(new CellContent(1), Translator.lookup(0, "R"));
+        assertEquals(new CellContent(2), Translator.lookup(0, "G"));
+        assertEquals(new CellContent(3), Translator.lookup(0, "B"));
+        assertEquals(new CellContent(10), Translator.lookup(1, "X"));
+        assertEquals(new CellContent(11), Translator.lookup(1, "Y"));
+        assertEquals(new CellContent(12), Translator.lookup(1, "Z"));
+        assertEquals(new CellContent(23), Translator.lookup(2, "U"));
+        assertEquals(new CellContent(34), Translator.lookup(2, "V"));
+        assertEquals(new CellContent(45), Translator.lookup(2, "W"));
 
-        assertNotEquals(1, (int) Translator.lookup(0, "G"));
-        assertNotEquals(1, (int) Translator.lookup(1, "R"));
+        assertNotEquals(1, Translator.lookup(0, "G"));
+        assertNotEquals(1, Translator.lookup(1, "R"));
     }
 
     @Test
@@ -49,12 +49,12 @@ public class TranslatorTest {
 
         int idx = 0;
         for (Scale scale : scales) {
-            int value1 = scale.getValueByLabel(gtScalaSymbols[idx]);
-            int value2 = scale.getValueByLabel(gtScalaSymbols[idx + 1]);
-            int value3 = scale.getValueByLabel(gtScalaSymbols[idx + 2]);
-            assertEquals(gtScalaValues[idx], value1);
-            assertEquals(gtScalaValues[idx + 1], value2);
-            assertEquals(gtScalaValues[idx + 2], value3);
+            CellContent value1 = scale.getValueByLabel(gtScalaSymbols[idx]);
+            CellContent value2 = scale.getValueByLabel(gtScalaSymbols[idx + 1]);
+            CellContent value3 = scale.getValueByLabel(gtScalaSymbols[idx + 2]);
+            assertEquals(new CellContent(gtScalaValues[idx]), value1);
+            assertEquals(new CellContent(gtScalaValues[idx + 1]), value2);
+            assertEquals(new CellContent(gtScalaValues[idx + 2]), value3);
             idx += 3;
         }
     }

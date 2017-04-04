@@ -49,7 +49,7 @@ public class Gui extends Frame {
 
         copyFromButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                fileDialogCopyFrom = new FileDialog(self, "Choose To Excel File");
+                fileDialogCopyFrom = new FileDialog(self, "Choose From Excel File");
                 if (Properties.hasBaseExcelPaths()) {
                     fileDialogCopyFrom.setDirectory(Properties.normalizedPath(Properties.getInstance().getBaseFromLookupPath()));
                 }
@@ -139,7 +139,7 @@ public class Gui extends Frame {
                     }
                     Logger.println("Excel2Excel successfully finished.");
                 } catch (Exception e) {
-                    Logger.printError(e.getMessage());
+                    Logger.printException(e);
                 }
             }
         });

@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,9 +61,8 @@ public class Consolidator extends FileReader {
         
         if (!cellMapping.hasDefaultValue()) {
             fromValue = inExcel.getCellValue(cellMapping.getFromRowIndex(), cellMapping.getFromColumnIndex());
-            if (cellMapping.hasTranslation() && fromValue.type == CellType.STRING) {
-            	fromValue.type = CellType.NUMERIC;
-                fromValue.numeric = Translator.lookup(cellMapping.getTranslationRow(), fromValue.string);
+            if (cellMapping.hasTranslation()) {
+            	fromValue = Translator.lookup(cellMapping.getTranslationRow(), fromValue);
             }
         }
         
@@ -98,12 +98,12 @@ public class Consolidator extends FileReader {
 
         Logger.println("Using from sheet Index " + cellMappingBlock.fromSheetIdx + " and TO sheet index: " + cellMappingBlock.toSheetIdx + " for performing cell lookups in Excel TO " + cellMappingBlock.toExcelIdx + ".");
         if(cellMappingBlock.requireNonEmptySource && inExcel.hasEmptySourceCells(sublistCellMappings)) {
-			Logger.printError("FROM Excel contained empty cells for the mapping \"" + cellMappingBlock.name + "\". Did not copy anything for current mapping block.");
+        	Logger.printError("FROM Excel contained empty cells for the mapping \"" + cellMappingBlock.name + "\". Did not copy anything for current mapping block.", cellMappingBlock.autoSkipOnError);
         	return;
         }
         int freeToColumn = 0;
         if(cellMappingBlock.insertAsColumn) {
-        	freeToColumn = outExcel.findEmptyColumnForMappingBlock(sublistCellMappings);
+        	freeToColumn = outExcel.findEmptyColumnForMappingBlock(cellMappingBlock);
         }
         for (CellMapping cellMapping : sublistCellMappings) {
             CellContent fromValue = processCellMapping(cellMapping);
@@ -114,7 +114,7 @@ public class Consolidator extends FileReader {
             	if(cellMappingBlock.insertAsColumn) {
             		toColumnIndex = freeToColumn;
             	} else {
-            		toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex());
+            		toColumnIndex = outExcel.findEmptyCellColumnAtFixedRow(cellMapping.getToRowIndex(), cellMapping.getToColumnIndex(), cellMappingBlock.treatFormulaAsBlank);
             	}
             }
             outExcel.writeCell(fromValue, cellMapping.getToRowIndex(), toColumnIndex);
@@ -149,9 +149,14 @@ public class Consolidator extends FileReader {
         		if(row[1].equals("insertAsColumn")) {
         			currentBlock.insertAsColumn = true;
         			return;
-        		}
-        		if(row[1].equals("requireNonEmptySource")) {
+        		} else if(row[1].equals("requireNonEmptySource")) {
         			currentBlock.requireNonEmptySource = true;
+        			return;
+        		} else if(row[1].equals("treatFormulaAsBlank")) {
+        			currentBlock.treatFormulaAsBlank = true;
+        			return;
+        		} else if(row[1].equals("autoSkipOnError")) {
+        			currentBlock.autoSkipOnError = true;
         			return;
         		}
         		return;

@@ -3,6 +3,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import java.nio.file.*;
 import java.io.*;
 
 /**
@@ -15,7 +16,7 @@ import java.io.*;
 public class XlsExcelFile extends Excel {
     private HSSFSheet sheet;
     private HSSFWorkbook workbook;
-    private String filePath;
+    private Path filePath;
 
     /**
      * Load a excel file by its path and sheet nr.
@@ -25,11 +26,11 @@ public class XlsExcelFile extends Excel {
      * @param sheetNr relevant sheet inside excel file that should be loaded.
      */
     public XlsExcelFile(String filePath, int sheetNr) {
-        this.filePath = filePath;
+        this.filePath = Paths.get(filePath);
 
-        FileInputStream file = null;
+        InputStream file = null;
         try {
-            file = new FileInputStream(new File(filePath));
+            file = Files.newInputStream(this.filePath, StandardOpenOption.READ);
             workbook = new HSSFWorkbook(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -64,7 +65,7 @@ public class XlsExcelFile extends Excel {
     @Override
     public void save() {
         try {
-            FileOutputStream stream = new FileOutputStream(filePath);
+            OutputStream stream = Files.newOutputStream(filePath, StandardOpenOption.WRITE);
             HSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
             workbook.write(stream);
         } catch (IOException e) {

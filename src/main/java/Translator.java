@@ -1,4 +1,7 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import org.apache.poi.ss.usermodel.CellType;
 
 /**
  * A Translator offers to translate symbolic values to numeric values
@@ -45,12 +48,25 @@ public class Translator extends FileReader{
      * @param toBeTranslated
      * @return
      */
-    public static double lookup(int lookupRow, String toBeTranslated) {
+    public static CellContent lookup(int lookupRow, String toBeTranslated) {
         Scale scale = getInstance().getScales().get(lookupRow);
 
         // normalize to be translated string
         String normalizedString = normalizedInputTranslation(toBeTranslated);
         return scale.getValueByLabel(normalizedString);
+    }
+
+    public static CellContent lookup(int lookupRow, CellContent fromValue) {
+    	if(fromValue.type == CellType.STRING) {
+    		fromValue.type = CellType.NUMERIC;
+        	fromValue = Translator.lookup(lookupRow, fromValue.string);
+    	} else if(fromValue.type == CellType.NUMERIC) {
+    		//FIXME: currently a bit of a hack, eventually we should probably handle numeric types with their cell formatting
+    		//DecimalFormat rounds the numeric to the number of #, so it will determine some source values equal that shouldn't have been
+    		//it makes more sense to treat the numerics as they appear in the Excel file which is determined by the cell's formatting.
+    		fromValue = Translator.lookup(lookupRow, new DecimalFormat("0.######").format(fromValue.numeric));
+    	}
+    	return fromValue;
     }
 
     /**
@@ -105,7 +121,7 @@ public class Translator extends FileReader{
         Scale scale = new Scale();
         for (int k = 0; k < itemCount; k++) {
             String label = row[k];
-            int value = Integer.parseInt(row[k + itemCount]);
+            CellContent value = new CellContent(row[k + itemCount]);
             scale.appendItem(label, value);
         }
         scales.add(scale);

@@ -148,6 +148,8 @@ Each mapping block starting with `m` may contain any number of lines starting wi
 #### List of Config Switches
 + `insertAsColumn`: Will insert all the mappings in that block that are set to search for the first free cell in their destination row (i.e. `rep=1`) into the first column that is free for all of them instead.
 + `requireNonEmpty`: Assures that all of the mappings in that block are only executed if all of their source cells aren't empty.
++ `treatFormulaAsBlank`: Treats formula cells in destination file as blank cells.
++ `autoSkipOnError`: Rather than presenting an error dialogue letting the user choose whether to skip the failed mapping it will skip automatically.
 
 
 ### Example
@@ -175,13 +177,13 @@ c insertAsColumn
 
 ## Scale Values Format
 
-This program allows you to translate symbolic cell values to numerical values. 
+This program allows you to translate symbolic cell values to numeric/string values. 
 
 For example, we use the commonly known labels used to represent sexes, `m` (male), `f` (female) and `o` (other) and want to map them
 to numerical values. A particular mapping could be the following: `m` corresponds to `1`, `f` to `2` and `o` maps to `3`.
 
 To do so, one has has to specify which cells should be translated in the `mappings.txt` file (see previous section)
-and define in the `scale_values.txt` file, which symbolic values are translated to which numerical value.
+and define in the `scale_values.txt` file, which symbolic values are translated to which numerical/string value.
 
 The format of the scale_values has the following structure:
 
@@ -193,7 +195,7 @@ Sm1 Sm2 ... Smn Nm1 Nm2 ... Nmn
 
 ```
 
-`Sij` defines a symbolic value and `Nij` its associated numerical value. Therefore, each line consists
+`Sij` defines a symbolic value and `Nij` its associated numerical or string value. Therefore, each line consists
 of `2*k` number of elements (k is the number of symbols).
  
 Items (both, symbolic and numerical values) in the file are white space separated.

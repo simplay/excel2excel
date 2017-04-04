@@ -10,9 +10,9 @@ public class ScaleTest {
 
         String label = "a_fancy_label";
         int numericLabelValue = 1337;
-        s.appendItem(label, numericLabelValue);
+        s.appendItem(label, new CellContent(numericLabelValue));
 
-        assertEquals(numericLabelValue, s.getValueByLabel(label));
+        assertEquals(new CellContent(numericLabelValue), s.getValueByLabel(label));
     }
 
     @Test
@@ -23,42 +23,42 @@ public class ScaleTest {
         int[] values = {11, 22, 33};
 
         for (int k = 0 ; k < values.length; k++) {
-            s.appendItem(labels[k], values[k]);
+            s.appendItem(labels[k], new CellContent(values[k]));
         }
 
         for (int k = 0 ; k < values.length; k++) {
-            assertEquals(values[k], s.getValueByLabel(labels[k]));
+            assertEquals(new CellContent(values[k]), s.getValueByLabel(labels[k]));
         }
     }
 
     @Test
     public void testCannotFetchInexistentItem() {
         Scale s = new Scale();
-        assertEquals(-1, s.getValueByLabel("male"));
+        assertEquals(null, s.getValueByLabel("male"));
     }
 
     @Test
     public void testCanOnlyFetchAppendedItems() {
         Scale s = new Scale();
-        assertEquals(-1, s.getValueByLabel("male"));
-        assertEquals(-1, s.getValueByLabel("female"));
+        assertEquals(null, s.getValueByLabel("male"));
+        assertEquals(null, s.getValueByLabel("female"));
 
-        s.appendItem("female", 2);
-        s.appendItem("male", 1);
+        s.appendItem("female", new CellContent(2));
+        s.appendItem("male", new CellContent(1));
 
-        assertEquals(1, s.getValueByLabel("male"));
-        assertEquals(2, s.getValueByLabel("female"));
+        assertEquals(new CellContent(1), s.getValueByLabel("male"));
+        assertEquals(new CellContent(2), s.getValueByLabel("female"));
     }
 
     @Test
     public void testAppendItemIgnoresAddingSameItemManyTimes() {
         Scale s = new Scale();
 
-        s.appendItem("happy", 5);
-        s.appendItem("happy", 2);
-        s.appendItem("happy", 3);
-        s.appendItem("happy", 13);
+        s.appendItem("happy", new CellContent(5));
+        s.appendItem("happy", new CellContent(2));
+        s.appendItem("happy", new CellContent(3));
+        s.appendItem("happy", new CellContent(13));
 
-        assertEquals(5, s.getValueByLabel("happy"));
+        assertEquals(new CellContent(5), s.getValueByLabel("happy"));
     }
 }
